@@ -1,0 +1,9 @@
+# Node stuff
+node_modules
+*.log
+
+# Python stuff
+venv
+
+# System file stuff
+.DS_Store
