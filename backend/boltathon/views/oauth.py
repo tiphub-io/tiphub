@@ -3,7 +3,7 @@ from flask import Blueprint, url_for, session, redirect
 from loginpass import create_flask_blueprint, GitHub, Gitlab
 from boltathon.models.user import site_user, user_lnd
 from boltathon.extensions import oauth
-from boltathon.utils import frontend_url
+from boltathon.util import frontend_url
 
 blueprint = Blueprint("oauth", __name__, url_prefix="/oauth")
 

@@ -1,5 +1,6 @@
-from flask import Blueprint, session, request, current_app
+from flask import Blueprint, session, request, current_app, url_for
 from boltathon.models.user import site_user, user_lnd
+from boltathon.util.lnaddr import lndecode
 import rpc_pb2 as ln
 import rpc_pb2_grpc as lnrpc
 import grpc
@@ -12,6 +13,7 @@ def index():
         return 'Development mode frontend should be accessed via webpack-dev-server'
     return current_app.send_static_file('index.html')
 
+
 @blueprint.route('/users/<uuid:user_id>', methods=['GET', 'POST'])
 def register_lnd(user_id):
     if request.method == "POST":
@@ -21,8 +23,18 @@ def register_lnd(user_id):
             grpc_url = request.form['grpc_url']
             print(request.files['tls_cert'])
 
-            user_lnd[user_id] = (macaroon, grpc_url, request.files['tls_cert'].read())
-            return 'You\'re done. Direct your donators <a href="{}">here</a>'.format(url_for("new_invoice", user_id=user_id))
+            lnd = (macaroon, grpc_url, request.files['tls_cert'].read())
+            payment_request = get_invoice(*lnd).payment_request
+            decoded = lndecode(payment_request)
+
+            if payment_request and decoded.pubkey:
+                user_lnd_entry = (*lnd, decoded.pubkey)
+                print("register_lnd: everything checks out, inserting: {}".format(user_lnd_entry))
+                user_lnd[user_id] = user_lnd_entry
+            else:
+                raise hell
+
+            return 'You\'re done. Direct your donators <a href="{}">here</a>'.format(url_for("templates.new_invoice", user_id=user_id))
         return "You are not logged in."
     return '''
         <form method=post enctype=multipart/form-data>
@@ -36,16 +48,20 @@ def register_lnd(user_id):
         </form>
     '''
 
+
+def get_invoice(macaroon, grpc_url, tls_cert):
+    creds = grpc.ssl_channel_credentials(tls_cert)
+    channel = grpc.secure_channel(grpc_url, creds)
+    stub = lnrpc.LightningStub(channel)
+    return stub.AddInvoice(ln.Invoice(), metadata=[('macaroon', macaroon)])
+
+
 @blueprint.route('/users/<uuid:user_id>/new_invoice')
 def new_invoice(user_id):
     if 'user_id' in session and session['user_id'] == user_id:
         if user_id in user_lnd:
-            macaroon, grpc_url, tls_cert = user_lnd[user_id]
-            creds = grpc.ssl_channel_credentials(tls_cert)
-            channel = grpc.secure_channel(grpc_url, creds)
-            stub = lnrpc.LightningStub(channel)
-            grpc_response = stub.AddInvoice(ln.Invoice(), metadata=[('macaroon', macaroon)])
-            return '<a href="lightning:{}">Pay with Lightning</a>'.format(grpc_response.payment_request)
+            invoice = get_invoice(*user_lnd[user_id][:3])
+            return '<a href="lightning:{}">Pay with Lightning</a>'.format(invoice.payment_request)
         else:
             raise hell
     else:
