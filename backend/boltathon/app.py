@@ -17,7 +17,7 @@ def create_app(config_objects=['boltathon.settings']):
   oauth.init_app(app)
   db.init_app(app)
   migrate.init_app(app, db)
-  ma.init(app)
+  ma.init_app(app)
 
   # Blueprints
   app.register_blueprint(views.api.blueprint)

@@ -1,33 +1,30 @@
 from datetime import datetime
 from boltathon.extensions import ma, db
-from sqlalchemy.dialects.postgresql import UUID
-from uuid import uuid4
+from boltathon.util import gen_random_id
 
 class Tip(db.Model):
   __tablename__ = 'tip'
 
-  userid = db.Column(db.Integer, db.ForeignKey("proposal.id"), nullable=False, primary_key=True)
-  site = db.Column(db.String(63), nullable=False, primary_key=True)
-  site_id = db.Column(db.string(63), nullable=False)
-  site_username = db.Column(db.string(63), nullable=False)
+  id = db.Column(db.Integer(), primary_key=True)
   date_created = db.Column(db.DateTime)
 
-  def __init__(self, userid: int):
-    self.id = uuid4()
-    self.date_created = datetime.now()
-  
-  def update_config(
+  receiver_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False, primary_key=True)
+  sender = db.Column(db.String(63), nullable=True)
+  message = db.Column(db.String(255), nullable=True)
+  repo = db.Column(db.String(63), nullable=True)
+  amount = db.Column(db.Integer(), nullable=False)
+  rhash = db.Column(db.String(127), nullable=False)
+
+  def __init__(
     self,
-    email: str,
-    macaroon: str,
-    cert: str,
-    node_url: str,
-    pubkey: str,
+    sender: str,
+    message: str,
+    amount: int,
+    rhash: str,
   ):
-    self.email = email
-    self.macaroon = macaroon
-    self.cert = cert
-    self.node_url = node_url
-    self.pubkey = pubkey
-    db.session.add(self)
-    db.session.flush()
+    self.id = gen_random_id(Tip)
+    self.sender = sender
+    self.message = message
+    self.amount = amount
+    self.rhash = rhash
+    self.date_created = datetime.now()
