@@ -75,5 +75,6 @@ module.exports = {
   ].filter(p => !!p),
   devServer: {
     hot: true,
+    historyApiFallback: true,
   },
 };
