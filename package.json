@@ -6,12 +6,8 @@
     "build": "cd frontend && yarn build",
     "postinstall": "cd frontend && yarn"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/dongcarl/boltathon.git"
-  },
-  "author": "",
-  "license": "ISC",
+  "repository": "git+https://github.com/dongcarl/boltathon.git",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/dongcarl/boltathon/issues"
   },
