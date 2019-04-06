@@ -1,0 +1,19 @@
+{
+  "name": "boltathon",
+  "version": "1.0.0",
+  "description": "Send sats to your favorite github repos!",
+  "scripts": {
+    "build": "cd frontend && yarn build",
+    "postinstall": "cd frontend && yarn"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dongcarl/boltathon.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dongcarl/boltathon/issues"
+  },
+  "homepage": "https://github.com/dongcarl/boltathon#readme"
+}

@@ -5,3 +5,4 @@ grpcio-tools==1.19.0
 Authlib==0.10
 loginpass==0.2.1
 python-dotenv==0.10.1
+gunicorn>=19.1.1
