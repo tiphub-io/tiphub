@@ -1,4 +1,4 @@
-from flask import Blueprint, session, request
+from flask import Blueprint, session, request, current_app
 from boltathon.models.user import site_user, user_lnd
 import rpc_pb2 as ln
 import rpc_pb2_grpc as lnrpc
@@ -6,12 +6,11 @@ import grpc
 
 blueprint = Blueprint("templates", __name__, url_prefix="/")
 
-site_user = dict()
-user_lnd = dict()
-
 @blueprint.route('/')
-def hello_world():
-    return '<a href="/oauth/github/login">Login using GitHub</a>'
+def index():
+    if current_app.config.get('ENV') == 'development':
+        return 'Development mode frontend should be accessed via webpack-dev-server'
+    return current_app.send_static_file('index.html')
 
 @blueprint.route('/users/<uuid:user_id>', methods=['GET', 'POST'])
 def register_lnd(user_id):

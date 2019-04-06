@@ -20,4 +20,7 @@ To start the frontend:
 
 ## Production
 
-TBD
+* Build the frontend with 'yarn && yarn build'
+* Run `FLASK_APP=app.py FLASK_ENV=production flask run`
+
+TODO: setup gunicorn for production
