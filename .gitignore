@@ -5,6 +5,7 @@ dist
 
 # Python stuff
 venv
+__pycache__
 
 # System file stuff
 .DS_Store

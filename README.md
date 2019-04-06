@@ -10,6 +10,7 @@ To start the backend:
   * `virtualenv -p python3 venv` 
   * `source venv/bin/activate`
 * `pip install -r requirements.txt`
+* `flask run`
 
 To start the frontend:
 * `cd frontend`
