@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Send sats to your favorite github repos!",
   "scripts": {
-    "build": "cd frontend && yarn build",
+    "build": "rm -rf node_modules && cd frontend && yarn build",
     "postinstall": "cd frontend && yarn"
   },
   "repository": "git+https://github.com/dongcarl/boltathon.git",
