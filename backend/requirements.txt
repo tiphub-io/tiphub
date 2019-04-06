@@ -6,3 +6,10 @@ Authlib==0.10
 loginpass==0.2.1
 python-dotenv==0.10.1
 gunicorn>=19.1.1
+Flask-SQLAlchemy==2.3.2
+SQLAlchemy==1.2.10
+Flask-Migrate==2.2.1
+psycopg2==2.7.5
+marshmallow==3.0.0b13
+flask-marshmallow==0.9.0
+marshmallow-sqlalchemy==0.16.1
