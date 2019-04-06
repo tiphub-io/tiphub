@@ -1,0 +1,44 @@
+.Template {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+
+  &-header,
+  &-content,
+  &-footer {
+    width: 100%;
+    padding-left: 2rem;
+    padding-right: 2rem;
+
+    &-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+    }
+  }
+
+  &-header {
+    &-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 0;
+    }
+
+    &-menu {
+      a {
+        padding: 0 0.1rem;
+        margin-left: 1rem;
+      }
+    }
+  }
+
+  &-content {
+    flex: 1;
+  }
+
+  &-footer {
+    padding: 2rem;
+    text-align: center;
+    background: rgba(0, 0, 33, 0.05);
+  }
+}

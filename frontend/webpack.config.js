@@ -25,13 +25,17 @@ const cssLoader = {
     'css-loader',
   ].filter(Boolean),
 };
-const sassLoader = {
+const lessLoader = {
   test: /\.less$/,
   use: [
     ...cssLoader.use,
-    'sass-loader',
+    'less-loader',
   ],
 };
+const urlLoader = {
+  test: /\.(png|woff|woff2|eot|ttf|svg)$/,
+  loader: 'url-loader?limit=100000',
+}
 
 module.exports = {
   mode: isDev ? 'development' : 'production',
@@ -48,8 +52,9 @@ module.exports = {
   module: {
     rules: [
       typescriptLoader,
-      sassLoader,
+      lessLoader,
       cssLoader,
+      urlLoader,
     ],
   },
   resolve: {
