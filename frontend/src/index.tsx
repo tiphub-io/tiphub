@@ -1,11 +1,23 @@
+// Style dependencies first so our styles override them
+import 'semantic-ui-css/semantic.min.css';
+import './style/index.less';
+
 import React from 'react';
 import { render } from 'react-dom';
 import { hot } from 'react-hot-loader';
+import { Router } from 'react-router';
+import { createBrowserHistory } from 'history';
+import App from './App';
 
-const App = hot(module)(() => (
-  <div className="App">
-    <h1>Sup</h1>
-  </div>
+const history = createBrowserHistory();
+
+const Container = hot(module)(() => (
+  <Router history={history}>
+    <App />
+  </Router>
 ));
 
-render(<App />, document.getElementById('root'));
+render(
+  <Container />,
+  document.getElementById('root'),
+);
