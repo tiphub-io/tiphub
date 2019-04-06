@@ -1,0 +1,65 @@
+@import '../style/variables.less';
+
+.Home {
+  display: flex;
+  align-items: flex-start;
+  min-height: 40vh;
+  padding-top: 10vh;
+  margin-bottom: 5rem;
+  max-width: 1020px;
+  margin: 0 auto;
+
+  &-info,
+  &-forms {
+    width: 100%;
+  }
+
+  &-info {
+    padding-top: 2rem;
+    padding-right: 8rem;
+
+    &-title {
+      font-size: 2.6rem;
+    }
+
+    &-text {
+      font-size: 1.6rem;
+    }
+  }
+
+  &-forms {
+    max-width: 400px;
+    text-align: center;
+
+    &-start {
+      .button {
+        margin-top: 0.5rem;
+      }
+    }
+
+    &-search {
+      .input {
+        width: 100%;
+      }
+    }
+  }
+
+  @media @lg-query {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    max-width: 600px;
+    margin: 0 auto 5rem;
+    padding-top: 3rem;
+
+    &-info {
+      margin-bottom: 5rem;
+      padding-top: 0;
+      padding-right: 0;
+    }
+
+    &-forms {
+      max-width: none;
+    }
+  }
+}

@@ -15,8 +15,7 @@ import os
 os.environ["GRPC_SSL_CIPHER_SUITES"] = 'HIGH+ECDSA'
 
 app = Flask(__name__)
-app.config['GITHUB_CLIENT_ID'] = '90add11196a20f9252a8'
-app.config['GITHUB_CLIENT_SECRET'] = 'ef1a19763e23db0188682f290d9fa03519b8c768'
+app.config.from_object('boltathon.settings')
 app.secret_key = b"\x83$b\xad\x06&\x89\xeb)'\x85R\x92\x8bK\x9d"
 oauth = OAuth(app)
 

@@ -1,3 +1,6 @@
+# Sneaky secrets
+.env
+
 # Node stuff
 node_modules
 dist

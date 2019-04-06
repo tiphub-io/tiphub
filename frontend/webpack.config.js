@@ -2,11 +2,12 @@ const path = require('path');
 const webpack = require('webpack');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-
-const isDev = process.env.NODE_ENV !== 'production';
+const DotenvPlugin = require('dotenv-webpack');
 
 const src = path.join(__dirname, 'src');
 const dist = path.join(__dirname, 'dist');
+
+const isDev = process.env.NODE_ENV !== 'production';
 
 const typescriptLoader = {
   test: /\.tsx?$/,
@@ -69,6 +70,7 @@ module.exports = {
       template: `${src}/index.html`,
       inject: true,
     }),
+    new DotenvPlugin({ systemvars: true }),
     isDev && new webpack.HotModuleReplacementPlugin(),
   ].filter(p => !!p),
   devServer: {
