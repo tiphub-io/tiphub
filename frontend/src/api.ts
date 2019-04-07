@@ -61,7 +61,7 @@ class API {
   }
 
   getTip(id: number) {
-    return this.request<Tip>('POST', `/tips/${id}`);
+    return this.request<Tip>('GET', `/tips/${id}`);
   }
 
   makeTip(id: number, args: Partial<Tip>) {

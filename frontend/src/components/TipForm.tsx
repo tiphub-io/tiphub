@@ -156,15 +156,20 @@ export default class TipForm extends React.Component<Props, State> {
 
   private pollTip = async () => {
     const { tip } = this.state;
-    if (!tip || tip.amount) return;
-
-    try {
-      let newTip = await api.getTip(tip.id);
-      this.setState({ tip: newTip });
-      setTimeout(this.pollTip, 2000);
-    } catch(err) {
-      console.error(err);
+    if (tip) {
+      // All done here
+      if (tip.amount) {
+        return;
+      }
+      // Fetch the latest version
+      try {
+        let newTip = await api.getTip(tip.id);
+        this.setState({ tip: newTip });
+      } catch(err) {
+        console.error(err);
+      }
     }
+    setTimeout(this.pollTip, 3000);
   }
 
   private getRandomPraise = () => {

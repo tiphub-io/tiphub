@@ -8,7 +8,7 @@ class Tip(db.Model):
   id = db.Column(db.Integer(), primary_key=True)
   date_created = db.Column(db.DateTime)
 
-  receiver_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False, primary_key=True)
+  receiver_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
   sender = db.Column(db.String(63), nullable=True)
   message = db.Column(db.String(255), nullable=True)
   repo = db.Column(db.String(63), nullable=True)
