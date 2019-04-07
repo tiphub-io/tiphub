@@ -1,6 +1,7 @@
 import React from 'react';
 import { Switch, Route } from 'react-router';
 import Home from './pages/Home';
+import About from './pages/About';
 import Profile from './pages/Profile';
 import ProfileSetup from './pages/ProfileSetup';
 import BlockstackAuth from './pages/BlockstackAuth';
@@ -13,6 +14,7 @@ export default class App extends React.Component {
       <Template>
         <Switch>
           <Route path="/" exact component={Home} />
+          <Route path="/about" exact component={About} />
           <Route path="/user/setup" component={ProfileSetup} />
           <Route path="/user/:userid/tip" component={Tip} />
           <Route path="/user/:userid" component={Profile} />
