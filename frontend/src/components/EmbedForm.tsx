@@ -38,7 +38,7 @@ interface State {
 const makeCode = (id: number, name: string, pubkey: string, img: string, site: string) =>
 `<p align="center">
   <a target="_blank" rel="noopener noreferrer" href="${window.location.origin}/user/${id}/tip?site=${site}">
-    <img src="${window.location.origin}/${img}" alt="Tip ${name} on TipHub" height="60">
+    <img src="${window.location.origin}${img}" alt="Tip ${name} on TipHub" height="60">
     <br />
     My pubkey starts with <code>${pubkey.slice(0, 8)}</code>
   </a>
