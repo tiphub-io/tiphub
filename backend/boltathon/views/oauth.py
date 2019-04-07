@@ -5,23 +5,20 @@ from boltathon.models.user import User
 from boltathon.models.connection import Connection
 from boltathon.extensions import oauth, db
 from boltathon.util import frontend_url
+from boltathon.util.errors import RequestError
 
 blueprint = Blueprint("oauth", __name__, url_prefix="/oauth")
 
 def handle_authorize(remote, token, user_info):
-    print("handle_authorize: in")
     if not token or not user_info:
-        raise hell
+        raise RequestError(code=400, message="Missing OAuth token or user info")
 
-    print("handle_authorize: token and user_info are there")
     # Find or create a new user
-    print('Searching for user with {} connection under id {}'.format(remote.name, user_info['preferred_username']))
     user = Connection.get_user_by_connection(
         site=remote.name,
         site_id=user_info['preferred_username']
     )
     if not user:
-        print('handle_authorize: creating a new user')
         user = User()
         connection = Connection(
             userid=user.id,
@@ -35,12 +32,8 @@ def handle_authorize(remote, token, user_info):
         db.session.commit()
 
     # Set them as logged in in the session
-    print("handle_authorize: setting session user to: {}".format(user.id))
     session['user_id'] = user.id
-    print(session)
-
-    redirect_url = frontend_url('/user/{}/config'.format(str(user.id)))
-    print("handle_authorize: redirecting to {}".format(redirect_url))
+    redirect_url = frontend_url('/user/me')
     return redirect(redirect_url)
 
 github_blueprint = create_flask_blueprint(GitHub, oauth, handle_authorize)

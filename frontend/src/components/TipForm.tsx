@@ -1,5 +1,6 @@
 import React from 'react';
 import { Form, Segment, Button, TextArea, Divider } from 'semantic-ui-react';
+import { Link } from 'react-router-dom';
 import QRCode from 'qrcode.react';
 import api, { Tip, User } from '../api';
 import { CONNECTION_UI } from '../util/constants';
@@ -38,20 +39,47 @@ export default class TipForm extends React.Component<Props, State> {
 
     let content;
     if (tip) {
-      const url = `lightning:${tip.payment_request}`;
-      content = (
-        <div className="TipForm-invoice">
-          <a className="TipForm-invoice-qr" href={url}>
-            <QRCode value={tip.payment_request.toUpperCase()} size={320} />
-          </a>
-          <Form className="TipForm-invoice-pr" size="large">
-            <TextArea value={tip.payment_request} rows={4} disabled />
-          </Form>
-          <Button href={url} size="huge" target="_blank" fluid secondary>
-            ⚡ Open in Wallet
-          </Button>
-        </div>
-      );
+      if (tip.amount) {
+        content = (
+          <div className="TipForm-success">
+            <div className="TipForm-success-icon">
+              <div className="TipForm-success-icon-check" />
+            </div>
+            <h2 className="TipForm-success-title">
+              Payment successful!
+            </h2>
+            <p className="TipForm-success-text">
+              You just supported open source development.
+              {this.getRandomPraise()}
+            </p>
+            <div className="TipForm-success-buttons">
+              <Link to="/">
+                <Button primary size="large">
+                  Go Home
+                </Button>
+              </Link>
+              <Button secondary size="large" onClick={() => window.close()}>
+                Close Page
+              </Button>
+            </div>
+          </div>
+        );
+      } else {
+        const url = `lightning:${tip.payment_request}`;
+        content = (
+          <div className="TipForm-invoice">
+            <a className="TipForm-invoice-qr" href={url}>
+              <QRCode value={tip.payment_request.toUpperCase()} size={300} />
+            </a>
+            <Form className="TipForm-invoice-pr" size="large">
+              <TextArea value={tip.payment_request} rows={4} disabled />
+            </Form>
+            <Button href={url} size="huge" target="_blank" fluid secondary>
+              ⚡ Open in Wallet
+            </Button>
+          </div>
+        );
+      }
     } else {
       content = (
         <>
@@ -126,8 +154,31 @@ export default class TipForm extends React.Component<Props, State> {
     this.setState({ isSubmitting: false });
   };
 
-  private pollTip = () => {
+  private pollTip = async () => {
     const { tip } = this.state;
-    if (!tip) return;
+    if (!tip || tip.amount) return;
+
+    try {
+      let newTip = await api.getTip(tip.id);
+      this.setState({ tip: newTip });
+      setTimeout(this.pollTip, 2000);
+    } catch(err) {
+      console.error(err);
+    }
   }
+
+  private getRandomPraise = () => {
+    const { tip } = this.state;
+    const praises = [
+      'Go ahead and pat yourself on the back. I won’t judge.',
+      'You are the bee’s knees, the cat’s pajamas, the monkey’s eyebrows.',
+      'A starving developer won’t go hungry tonight, thanks to you.',
+      'Good luck trying to write off this donation on your taxes.',
+      'You’ve given us that warm, fuzzy feeling.',
+      'Who’s next?!',
+      'You have been blessed by Satoshi for your kindness.',
+      'That’s your good deed for the day.',
+    ];
+    return ' ' + praises[(tip ? tip.id : 0) % praises.length + 1];
+  };
 }

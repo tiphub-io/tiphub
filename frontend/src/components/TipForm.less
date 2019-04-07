@@ -1,3 +1,40 @@
+@circle-size: 120px;
+@check-height: @circle-size / 2;
+@check-width: @check-height / 2;
+@check-left: @circle-size / 4;
+@check-thickness: @circle-size / 10;
+
+@keyframes pop-in {
+  0% {
+    opacity: 0;
+    transform: scale(0);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes checkmark {
+  0% {
+    height: 0;
+    width: 0;
+    transform: scaleX(-1) rotate(135deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  30% {
+    height: 0;
+    width: @check-width;
+  }
+  100% {
+    height: @check-height; width: @check-width;
+    transform: scaleX(-1) rotate(135deg);
+  }
+}
+
 .TipForm {
   max-width: 380px;
   margin: 0 auto;
@@ -34,6 +71,45 @@
         font-family: "Lucida Console", Monaco, monospace;
         background: rgba(0, 0, 0, 0.05);
         color: rgba(0, 0, 0, 0.7);
+      }
+    }
+  }
+
+  &-success {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
+
+    &-text {
+      font-size: 1.25rem;
+      line-height: 1.6;
+      margin-bottom: 2rem;
+    }
+
+    &-icon {
+      width: @circle-size;
+      height: @circle-size;
+      position: relative;
+      background: #2EB150;
+      border-radius: 100%;
+      animation: pop-in 300ms cubic-bezier(0.450, 0, 0.000, 1) 100ms both;
+
+      &-check:after {
+        content: '';
+        position: absolute;
+        left: @check-left;
+        top: @check-height * 1.1;
+        height: @check-height; 
+        width: @check-width;
+        border-right: @check-thickness solid white;
+        border-top: @check-thickness solid white; 
+        border-radius: 2.5px;
+        opacity: 1;
+        transform-origin: left top;
+        transform: scaleX(-1) rotate(135deg);
+        animation: checkmark 500ms ease 350ms both;
       }
     }
   }

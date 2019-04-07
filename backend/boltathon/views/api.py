@@ -81,7 +81,7 @@ def post_invoice(args, **kwargs):
 
 
 @blueprint.route('/tips/<tip_id>', methods=['GET'])
-def get_user(tip_id):
+def get_tip(tip_id):
   tip = Tip.query.get(tip_id)
   if not tip:
     raise RequestError(code=404, message='No tip with that ID')

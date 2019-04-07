@@ -87,7 +87,7 @@ class Profile extends React.Component<Props, State> {
       }];
       content = <Tab menu={{ secondary: true, pointing: true }} panes={panes} />;
     } else {
-      content = <h1>Look at me!</h1>;
+      content = <h1>Public profile TBD</h1>;
     }
 
     return (
