@@ -1,0 +1,103 @@
+@import '../style/variables.less';
+
+.NodeForm {
+  display: flex;
+  max-width: 1020px;
+  margin: 0 auto;
+
+  &-form {
+    flex: 1;
+
+    &.ui.form .field {
+      margin-bottom: 2rem;
+    }
+
+    &.ui.form &-label {
+      display: flex;
+      align-items: center;
+
+      &-help.ui.button {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 0;
+        width: 1.4rem;
+        height: 1.4rem;
+        margin-left: 0.25rem;
+        font-size: 0.7rem;
+        border-radius: 100%;
+        opacity: 0.5;
+        transform: translate(-10%, -20%) scale(0.7);
+
+        &:hover {
+          opacity: 1;
+        }
+      }
+    }
+
+    &-files {
+      display: flex;
+
+      .field {
+        flex: 1;
+
+        &:first-child {
+          margin-right: 1rem;
+        }
+
+        .disabled.input {
+          opacity: 1;
+
+          :disabled {
+            background: rgba(0, 0, 0, 0.05);
+            border-color: rgba(0, 0, 0, 0.1);
+          }
+        }
+      }
+      .button {
+        height: 100%;
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+      }
+    }
+  }
+
+  &-help {
+    margin-top: 1.8rem;
+    width: 100%;
+    max-width: 440px;
+    flex-shrink: 0;
+    margin-left: 3rem;
+
+    .message {
+      height: 100%;
+
+      code {
+        font-size: 0.9rem;
+      }
+
+      ul li {
+        font-size: 1rem;
+
+        code {
+          font-size: 0.85rem;
+        }
+      }
+    }
+  }
+
+  @media @lg-query {
+    flex-direction: column-reverse;
+    justify-content: center;
+    align-items: center;
+
+    &-form {
+      width: 100%;
+    }
+
+    &-help {
+      margin: 0 0 2rem;
+      max-width: none;
+    }
+  }
+}
