@@ -3,7 +3,7 @@ from webargs import fields
 from webargs.flaskparser import use_args
 from boltathon.extensions import db
 from boltathon.util.auth import requires_auth
-from boltathon.util.node import get_pubkey_from_credentials, make_invoice
+from boltathon.util.node import get_pubkey_from_credentials, make_invoice, lookup_invoice
 from boltathon.util.errors import RequestError
 from boltathon.models.user import User, self_user_schema, public_user_schema
 from boltathon.models.connection import Connection
@@ -85,6 +85,19 @@ def get_tip(tip_id):
   tip = Tip.query.get(tip_id)
   if not tip:
     raise RequestError(code=404, message='No tip with that ID')
+
+  # Check with node if it's been paid
+  invoice = lookup_invoice(
+    tip.rhash,
+    tip.recipient.node_url,
+    tip.recipient.macaroon,
+    tip.recipient.cert,
+  )
+  if hasattr(invoice, 'amt_paid_sat'):
+    tip.amount = invoice.amt_paid_sat
+    db.session.add(tip)
+    db.session.commit()
+
   return jsonify(tip_schema.dump(tip))
 
 
