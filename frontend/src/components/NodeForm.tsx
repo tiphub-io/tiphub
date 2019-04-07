@@ -5,7 +5,7 @@ import api, { SelfUser } from '../api';
 import './NodeForm.less';
 
 interface FormState {
-  nodeUrl: string;
+  node_url: string;
   macaroon: string;
   cert: string;
   email: string;
@@ -32,7 +32,7 @@ const defaultHelpText = {
   ),
 };
 const helpText = {
-  nodeUrl: {
+  node_url: {
     title: 'gRPC Endpoint',
     content: (
       <>
@@ -143,7 +143,7 @@ interface State {
 export default class NodeForm extends React.Component<Props, State> {
   state: State = {
     form: {
-      nodeUrl: '',
+      node_url: '',
       macaroon: '',
       cert: '',
       email: '',
@@ -175,10 +175,10 @@ export default class NodeForm extends React.Component<Props, State> {
       <div className="NodeForm">
         <Form className="NodeForm-form" size={size} onSubmit={this.handleSubmit}>
           <Form.Field
-            label={this.renderLabel('gRPC Endpoint', 'nodeUrl')}
+            label={this.renderLabel('gRPC Endpoint', 'node_url')}
             control="input"
-            name="nodeUrl"
-            value={form.nodeUrl}
+            name="node_url"
+            value={form.node_url}
             onChange={this.handleChange}
             placeholder="198.51.100.0:10009"
           />
@@ -191,6 +191,7 @@ export default class NodeForm extends React.Component<Props, State> {
                 onChange={this.handleChange}
                 placeholder="Hex encoded, or file"
                 disabled={uploaded.macaroon}
+                accept=".macaroon"
                 action={
                   <label htmlFor="node-form-macaroon">
                     <Button as="div" icon="upload" size={size}/>
@@ -212,6 +213,7 @@ export default class NodeForm extends React.Component<Props, State> {
                 onChange={this.handleChange}
                 placeholder="Base64 encoded, or file"
                 disabled={uploaded.cert}
+                accept=".cert"
                 action={
                   <label htmlFor="node-form-cert">
                     <Button as="div" icon="upload" size={size}/>

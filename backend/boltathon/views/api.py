@@ -67,7 +67,6 @@ def post_invoice(args, **kwargs):
     raise RequestError(code=404, message='No user with that ID')
 
   invoice = make_invoice(user.node_url, user.macaroon, user.cert)
-  print(invoice)
   tip = Tip(
     receiver_id=args.get('user_id'),
     sender=args.get('sender'),

@@ -12,7 +12,7 @@ export default class App extends React.Component {
       <Template>
         <Switch>
           <Route path="/" exact component={Home} />
-          <Route path="/user/:userid/config" component={ProfileSetup} />
+          <Route path="/user/setup" component={ProfileSetup} />
           <Route path="/user/:userid/tip" component={Tip} />
           <Route path="/user/:userid" component={Profile} />
           <Route path="*" render={() => '404'} />

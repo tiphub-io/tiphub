@@ -20,7 +20,7 @@ export default class Template extends React.Component<Props> {
             </Link>
             <div className="Template-header-menu">
               <Link to="/about">About</Link>
-              <Link to="/account">Account</Link>
+              <Link to="/user/me">Account</Link>
             </div>
           </div>
         </div>

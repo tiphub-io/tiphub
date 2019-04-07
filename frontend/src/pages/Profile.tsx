@@ -26,7 +26,8 @@ class Profile extends React.Component<Props, State> {
   };
 
   componentDidMount() {
-    const { userid } = this.props.match.params;
+    const { match, history } = this.props;
+    const { userid } = match.params;
     let req;
     if (userid.toLowerCase() === 'me') {
       req = api.getSelf();
@@ -35,6 +36,9 @@ class Profile extends React.Component<Props, State> {
     }
 
     req.then(user => {
+      if (isSelfUser(user) && !user.pubkey) {
+        history.replace('/user/setup');
+      }
       this.setState({ user });
     }).catch(err => {
       this.setState({ error: err.message });
@@ -49,7 +53,7 @@ class Profile extends React.Component<Props, State> {
     }
 
     let content;
-    if (!user) {
+    if (!user || !user.pubkey) {
       content = (
         <div className="Profile-loading">
           <Loader active size="large">Loading...</Loader>
@@ -85,14 +89,18 @@ class Profile extends React.Component<Props, State> {
           );
         },
       }];
-      content = <Tab menu={{ secondary: true, pointing: true }} panes={panes} />;
+      content = (
+        <>
+          <ProfileHeader user={user} />
+          <Tab menu={{ secondary: true, pointing: true }} panes={panes} />;
+        </>
+      );
     } else {
       content = <h1>Public profile TBD</h1>;
     }
 
     return (
       <div className="Profile">
-        <ProfileHeader user={user} />
         {content}
       </div>
     );
