@@ -96,7 +96,7 @@ export default class ProfileTips extends React.Component<Props, State> {
   }
 
   private handleChangePage = (_: any, data: PaginationProps) => {
-    this.fetchTips(data.activePage);
+    this.fetchTips(data.activePage as number);
   };
 
   private fetchTips = async (page: number) => {
