@@ -1,4 +1,4 @@
-from flask import Blueprint, g, jsonify
+from flask import Blueprint, g, jsonify, session
 from webargs import fields
 from webargs.flaskparser import use_args
 from boltathon.extensions import db
@@ -6,6 +6,7 @@ from boltathon.util.auth import requires_auth
 from boltathon.util.node import get_pubkey_from_credentials, make_invoice
 from boltathon.util.errors import RequestError
 from boltathon.models.user import User, self_user_schema, public_user_schema
+from boltathon.models.connection import Connection
 from boltathon.models.tip import Tip, tip_schema
 
 blueprint = Blueprint("api", __name__, url_prefix="/api")
@@ -85,3 +86,37 @@ def get_tip(tip_id):
   if not tip:
     raise RequestError(code=404, message='No tip with that ID')
   return jsonify(tip_schema.dump(tip))
+
+
+@blueprint.route('/auth/blockstack', methods=['POST'])
+@use_args({
+  'id': fields.Str(required=True),
+  'username': fields.Str(required=True),
+})
+def blockstack_auth(args):
+  # TODO: Server-side verification
+   # Find or create a new user and add the connection
+  user = Connection.get_user_by_connection(
+      site='blockstack',
+      site_id=args.get('id'),
+  )
+  if not user:
+    if session['user_id']:
+      user = User.query.get(session['user_id'])
+    else:
+      user = User()
+    connection = Connection(
+        userid=user.id,
+        site='blockstack',
+        site_id=args.get('id'),
+        site_username=args.get('username'),
+    )
+    user.connections.append(connection)
+    db.session.add(user)
+    db.session.add(connection)
+    db.session.commit()
+  
+  # Log them in if they weren't before
+  session['user_id'] = user.id
+
+  return jsonify(self_user_schema.dump(user))

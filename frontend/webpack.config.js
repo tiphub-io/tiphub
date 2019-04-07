@@ -3,6 +3,7 @@ const webpack = require('webpack');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const DotenvPlugin = require('dotenv-webpack');
+const WebpackPwaManifest = require('webpack-pwa-manifest');
 
 const src = path.join(__dirname, 'src');
 const dist = path.join(__dirname, 'dist');
@@ -78,10 +79,26 @@ module.exports = {
       inject: true,
     }),
     new DotenvPlugin({ systemvars: true }),
+    new WebpackPwaManifest({
+      name: 'Boltathon',
+      fingerprints: false,
+      description: 'Tip open source developers with Lightning',
+      background_color: '#333',
+      crossorigin: 'use-credentials',
+      icons: [
+        {
+          src: path.join(src, 'images/favicon.png'),
+          sizes: [96, 128, 192, 256, 384, 512],
+        },
+      ]
+    }),
     isDev && new webpack.HotModuleReplacementPlugin(),
   ].filter(p => !!p),
   devServer: {
     hot: true,
     historyApiFallback: true,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+    },
   },
 };

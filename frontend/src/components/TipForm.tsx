@@ -117,7 +117,7 @@ export default class TipForm extends React.Component<Props, State> {
         <div className="TipForm-header">
           <img
             className="TipForm-header-image"
-            src={CONNECTION_UI[connection.site].img(connection.site_username)}
+            src={CONNECTION_UI[connection.site].img(connection)}
           />
           You’re tipping {connection.site_username}
         </div>

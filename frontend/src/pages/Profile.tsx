@@ -92,7 +92,7 @@ class Profile extends React.Component<Props, State> {
       content = (
         <>
           <ProfileHeader user={user} />
-          <Tab menu={{ secondary: true, pointing: true }} panes={panes} />;
+          <Tab menu={{ secondary: true, pointing: true }} panes={panes} />
         </>
       );
     } else {

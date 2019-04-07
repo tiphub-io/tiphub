@@ -35,7 +35,7 @@ interface State {
   connection: Connection;
 }
 
-const makeCode = (id: string, name: string, pubkey: string, img: string) =>
+const makeCode = (id: number, name: string, pubkey: string, img: string) =>
 `<p align="center">
   <a target="_blank" rel="noopener noreferrer" href="${window.location.origin}/user/${id}/tip">
     <img src="${window.location.origin}/${img}" alt="Tip ${name} on TipHub" height="60">

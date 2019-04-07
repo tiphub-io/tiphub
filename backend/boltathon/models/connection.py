@@ -29,6 +29,7 @@ class PublicConnectionSchema(ma.Schema):
     # Fields to expose
     fields = (
       "site",
+      "site_id",
       "site_username",
     )
 

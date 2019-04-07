@@ -1,7 +1,13 @@
 import React from 'react';
 import { Button, Header, Divider, Search, Icon } from 'semantic-ui-react';
+import { redirectToSignIn } from 'blockstack.js';
 import { makeBackendUrl } from '../util/formatters';
+import BlockstackIcon from '../images/blockstack.svg';
 import './Home.less';
+
+function blockstackConnect() {
+  redirectToSignIn(`${window.location.origin}/auth/blockstack`);
+}
 
 const Home: React.SFC<{}> = () => (
   <div className="Home">
@@ -35,6 +41,14 @@ const Home: React.SFC<{}> = () => (
           fluid
         >
           <Icon name="gitlab" /> Connect with GitLab
+        </Button>
+        <Button
+          onClick={blockstackConnect}
+          size="big"
+          color="purple"
+          fluid
+        >
+          <img src={BlockstackIcon} className="Home-forms-start-icon" />{' '}Connect with Blockstack        
         </Button>
       </div>
       <Divider section horizontal>or</Divider>

@@ -1,18 +1,20 @@
 import { stringify } from 'query-string';
+import { UserData } from 'blockstack.js/lib/auth/authApp';
 import env from './util/env';
 
 export enum ConnectionSite {
   github = 'github',
   gitlab = 'gitlab',
+  blockstack = 'blockstack',
 }
 
 export interface Connection {
   site: ConnectionSite;
+  site_id: string;
   site_username: string;
 }
 
 export interface SelfConnection extends Connection {
-  site_id: string;
   date_created: string;
 }
 
@@ -66,6 +68,13 @@ class API {
 
   makeTip(id: number, args: Partial<Tip>) {
     return this.request<Tip>('POST', `/users/${id}/tip`, args);
+  }
+
+  blockstackAuth(data: UserData) {
+    return this.request<SelfUser>('POST', '/auth/blockstack', {
+      id: data.identityAddress,
+      username: data.username,
+    });
   }
 
   // Internal fetch function

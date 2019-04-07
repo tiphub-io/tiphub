@@ -15,7 +15,7 @@ export default class ProfileHeader extends React.Component<Props> {
     let image, info;
     if (user) {
       const primaryConnection = user.connections[0];
-      image = <img src={CONNECTION_UI[primaryConnection.site].img(primaryConnection.site_username)} />;
+      image = <img src={CONNECTION_UI[primaryConnection.site].img(primaryConnection)} />;
       info = (
         <>
           <div className="ProfileHeader-info-name">
@@ -28,10 +28,10 @@ export default class ProfileHeader extends React.Component<Props> {
             {user.connections.map(c => (
               <Button
                 size="tiny"
-                href={CONNECTION_UI[c.site].url(c.site_username)}
+                href={CONNECTION_UI[c.site].url(c)}
                 target="_blank"
               >
-                <Icon name={c.site} /> {c.site_username}
+                <Icon name={CONNECTION_UI[c.site].icon} /> {c.site_username}
               </Button>
             ))}
           </div>

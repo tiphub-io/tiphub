@@ -13,7 +13,7 @@ class User(db.Model):
   node_url = db.Column(db.String(255), nullable=True)
   pubkey = db.Column(db.String(255), nullable=True)
 
-  connections = db.relationship('Connection', backref='user', lazy=True, cascade='all, delete-orphan')
+  connections = db.relationship('Connection', backref='user', order_by="asc(Connection.date_created)", lazy=True, cascade='all, delete-orphan')
   tips = db.relationship('Tip', backref='recipient', lazy=True, cascade='all, delete-orphan')
 
   def __init__(self):
