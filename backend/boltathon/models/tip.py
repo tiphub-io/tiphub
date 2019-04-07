@@ -28,3 +28,18 @@ class Tip(db.Model):
     self.amount = amount
     self.rhash = rhash
     self.date_created = datetime.now()
+
+class TipSchema(ma.Schema):
+  class Meta:
+    model = Tip
+    # Fields to expose
+    fields = (
+      "id",
+      "sender",
+      "message",
+      "repo",
+      "amount",
+    )
+
+tip_schema = TipSchema()
+tips_schema = TipSchema(many=True)

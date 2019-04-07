@@ -6,6 +6,7 @@ from .errors import RequestError
 def requires_auth(f):
   @wraps(f)
   def decorated(*args, **kwargs):
+    print(session)
     # Check that they have user_id in session
     if not session.get('user_id'):
       raise RequestError(code=403, message='Must be logged in to do that')

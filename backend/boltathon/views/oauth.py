@@ -37,6 +37,7 @@ def handle_authorize(remote, token, user_info):
     # Set them as logged in in the session
     print("handle_authorize: setting session user to: {}".format(user.id))
     session['user_id'] = user.id
+    print(session)
 
     redirect_url = frontend_url('/user/{}/config'.format(str(user.id)))
     print("handle_authorize: redirecting to {}".format(redirect_url))

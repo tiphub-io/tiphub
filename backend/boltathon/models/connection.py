@@ -21,3 +21,31 @@ class Connection(db.Model):
   def get_user_by_connection(site: str, site_id: str):
     connection = Connection.query.filter_by(site=site, site_id=site_id).first()
     return connection.user if connection else None
+
+# Limited data (public view)
+class PublicConnectionSchema(ma.Schema):
+  class Meta:
+    model = Connection
+    # Fields to expose
+    fields = (
+      "site",
+      "site_username",
+    )
+
+public_connection_schema = PublicConnectionSchema()
+public_connections_schema = PublicConnectionSchema(many=True)
+
+# Full data (self view)
+class SelfConnectionSchema(ma.Schema):
+  class Meta:
+    model = Connection
+    # Fields to expose
+    fields = (
+      "site",
+      "site_id",
+      "site_username",
+      "date_created",
+    )
+
+self_connection_schema = SelfConnectionSchema()
+self_connections_schema = SelfConnectionSchema(many=True)

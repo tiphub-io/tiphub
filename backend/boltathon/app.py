@@ -1,5 +1,6 @@
 # Flask
 from flask import Flask, session, redirect, url_for, request
+from flask_cors import CORS
 from boltathon.extensions import oauth, db, migrate, ma
 from boltathon import views
 # use loginpass to make OAuth connection simpler
@@ -18,6 +19,7 @@ def create_app(config_objects=['boltathon.settings']):
   db.init_app(app)
   migrate.init_app(app, db)
   ma.init_app(app)
+  CORS(app, supports_credentials=True)
 
   # Blueprints
   app.register_blueprint(views.api.blueprint)

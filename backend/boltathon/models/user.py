@@ -19,3 +19,40 @@ class User(db.Model):
   def __init__(self):
     self.id = gen_random_id(User)
     self.date_created = datetime.now()
+
+# Limited data (public view)
+class PublicUserSchema(ma.Schema):
+  class Meta:
+    model = User
+    # Fields to expose
+    fields = (
+      "id",
+      "pubkey",
+      "connections",
+    )
+
+  connections = ma.Nested("PublicConnectionSchema", many=True)
+
+public_user_schema = PublicUserSchema()
+public_users_schema = PublicUserSchema(many=True)
+
+# Full data (self view)
+class SelfUserSchema(ma.Schema):
+  class Meta:
+    model = User
+    # Fields to expose
+    fields = (
+      "id",
+      "date_created",
+      "email",
+      "macaroon",
+      "cert",
+      "node_url",
+      "pubkey",
+      "connections",
+    )
+  
+  connections = ma.Nested("SelfConnectionSchema", many=True)
+
+self_user_schema = SelfUserSchema()
+self_users_schema = SelfUserSchema(many=True)

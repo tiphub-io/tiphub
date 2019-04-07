@@ -1,6 +1,7 @@
 import React from 'react';
 import { Form, Input, Message, Button, Grid } from 'semantic-ui-react';
 import { blobToString } from '../util/formatters';
+import api, { SelfUser } from '../api';
 import './NodeForm.less';
 
 interface FormState {
@@ -123,7 +124,9 @@ const helpText = {
 type HelpKey = keyof typeof helpText;
 
 interface Props {
+  userid: number;
   initialFormState?: FormState;
+  onSubmit(user: SelfUser): void;
 }
 
 interface State {
@@ -133,6 +136,8 @@ interface State {
     cert: boolean;
   };
   helpKey: HelpKey | null;
+  error: string;
+  isSubmitting: boolean;
 }
 
 export default class NodeForm extends React.Component<Props, State> {
@@ -148,6 +153,8 @@ export default class NodeForm extends React.Component<Props, State> {
       cert: false,
     },
     helpKey: null,
+    error: '',
+    isSubmitting: false,
   };
 
   constructor(props: Props) {
@@ -161,12 +168,12 @@ export default class NodeForm extends React.Component<Props, State> {
   }
 
   render() {
-    const { form, uploaded, helpKey } = this.state;
+    const { form, uploaded, helpKey, error, isSubmitting } = this.state;
     const size = 'large';
     const help = helpText[helpKey as HelpKey] || defaultHelpText;
     return (
       <div className="NodeForm">
-        <Form className="NodeForm-form" size={size}>
+        <Form className="NodeForm-form" size={size} onSubmit={this.handleSubmit}>
           <Form.Field
             label={this.renderLabel('gRPC Endpoint', 'nodeUrl')}
             control="input"
@@ -223,12 +230,14 @@ export default class NodeForm extends React.Component<Props, State> {
             label="Email (optional)"
             control="input"
             name="email"
-            value={form.nodeUrl}
+            value={form.email}
             onChange={this.handleChange}
             placeholder="satoshi@nakamoto.com"
           />
-
-          <Button size="large" fluid primary>
+          {error && (
+            <Message error header="Submission failed" content={error} />
+          )}
+          <Button size="large" fluid primary loading={isSubmitting}>
             Submit
           </Button>
         </Form>
@@ -300,5 +309,20 @@ export default class NodeForm extends React.Component<Props, State> {
       form,
       uploaded,
     });
+  };
+
+  private handleSubmit = async (ev: React.FormEvent) => {
+    ev.preventDefault();
+    this.setState({
+      error: '',
+      isSubmitting: true,
+    })
+    try {
+      const user = await api.updateUser(this.props.userid, this.state.form);
+      this.props.onSubmit(user);
+    } catch(err) {
+      this.setState({ error: err.message });
+    }
+    this.setState({ isSubmitting: false });
   };
 }
