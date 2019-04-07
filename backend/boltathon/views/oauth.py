@@ -1,7 +1,7 @@
 import uuid
 from flask import Blueprint, url_for, session, redirect
 from loginpass import create_flask_blueprint, GitHub, Gitlab
-from boltathon.models.user import User, site_user
+from boltathon.models.user import User
 from boltathon.models.connection import Connection
 from boltathon.extensions import oauth, db
 from boltathon.util import frontend_url
