@@ -31,6 +31,15 @@ export interface SelfUser extends User {
   connections: SelfConnection[];
 }
 
+export interface Tip {
+  id: number;
+  sender: string | null;
+  message: string | null;
+  repo: string;
+  amount: string;
+  payment_request: string;
+}
+
 class API {
   url: string;
 
@@ -49,6 +58,14 @@ class API {
 
   updateUser(id: number, args: Partial<SelfUser>) {
     return this.request<SelfUser>('PUT', `/users/${id}`, args);
+  }
+
+  getTip(id: number) {
+    return this.request<Tip>('POST', `/tips/${id}`);
+  }
+
+  makeTip(id: number, args: Partial<Tip>) {
+    return this.request<Tip>('POST', `/users/${id}/tip`, args);
   }
 
   // Internal fetch function
@@ -71,7 +88,6 @@ class API {
       query = `?${stringify(args as any)}`;
     }
 
-    console.log(this.url);
     return fetch(this.url + path + query, {
       method,
       headers,

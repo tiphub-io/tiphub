@@ -4,7 +4,7 @@ from boltathon.models.tip import Tip, tip_schema
 from boltathon.extensions import db
 from boltathon.util.auth import requires_auth
 from boltathon.util.errors import RequestError
-from boltathon.util.node import get_invoice, get_pubkey_from_credentials, lookup_invoice
+from boltathon.util.node import make_invoice, get_pubkey_from_credentials, lookup_invoice
 
 blueprint = Blueprint("templates", __name__, url_prefix="/")
 
@@ -30,7 +30,7 @@ def new_invoice(user_id):
     from_name = request.args.get('from')
     message = request.args.get('message')
 
-    invoice = get_invoice(user.macaroon, user.node_url, user.cert)
+    invoice = make_invoice(user.macaroon, user.node_url, user.cert)
 
     pending_tip = Tip(from_name, message, None, invoice.rhash)
     db.session.add(pending_tip)

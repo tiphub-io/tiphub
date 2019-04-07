@@ -3,6 +3,7 @@ import { Switch, Route } from 'react-router';
 import Home from './pages/Home';
 import Profile from './pages/Profile';
 import ProfileSetup from './pages/ProfileSetup';
+import Tip from './pages/Tip';
 import Template from './components/Template';
 
 export default class App extends React.Component {
@@ -11,8 +12,9 @@ export default class App extends React.Component {
       <Template>
         <Switch>
           <Route path="/" exact component={Home} />
-          <Route path="/user/:userid" component={Profile} />
           <Route path="/user/:userid/config" component={ProfileSetup} />
+          <Route path="/user/:userid/tip" component={Tip} />
+          <Route path="/user/:userid" component={Profile} />
           <Route path="*" render={() => '404'} />
         </Switch>
       </Template>

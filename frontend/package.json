@@ -16,6 +16,7 @@
     "less": "3.9.0",
     "less-loader": "4.1.0",
     "mini-css-extract-plugin": "0.5.0",
+    "qrcode.react": "0.9.3",
     "query-string": "6.4.2",
     "react": "16.8.6",
     "react-copy-to-clipboard": "5.0.1",
@@ -37,6 +38,7 @@
   "devDependencies": {
     "@types/dotenv": "6.1.1",
     "@types/node": "11.13.0",
+    "@types/qrcode.react": "0.8.2",
     "@types/react": "16.8.12",
     "@types/react-copy-to-clipboard": "4.2.6",
     "@types/react-dom": "16.8.3",
