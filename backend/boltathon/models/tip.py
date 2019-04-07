@@ -38,6 +38,7 @@ class TipSchema(ma.Schema):
     # Fields to expose
     fields = (
       "id",
+      "date_created",
       "sender",
       "message",
       "repo",

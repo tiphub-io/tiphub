@@ -63,7 +63,7 @@ class Profile extends React.Component<Props, State> {
     else if (isSelfUser(user)) {
       const panes = [{
         menuItem: 'Tips',
-        render: () => <ProfileTips />,
+        render: () => <ProfileTips user={user} />,
       }, {
         menuItem: 'Embed',
         render: () => <EmbedForm user={user} />,

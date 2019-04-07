@@ -36,11 +36,17 @@ export interface SelfUser extends User {
 
 export interface Tip {
   id: number;
+  date_created: string;
   sender: string | null;
   message: string | null;
   repo: string;
   amount: string;
   payment_request: string;
+}
+
+export interface PagesData {
+  page: number;
+  pages: number;
 }
 
 class API {
@@ -57,6 +63,14 @@ class API {
 
   getUser(id: number) {
     return this.request<User>('GET', `/users/${id}`);
+  }
+
+  getUserTips(id: number, page?: number) {
+    return this.request<{
+      user: User;
+      tips: Tip[];
+      pagination: PagesData;
+    }>('GET', `/users/${id}/tips`, { page });
   }
 
   updateUser(id: number, args: Partial<SelfUser>) {

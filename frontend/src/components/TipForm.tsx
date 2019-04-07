@@ -189,7 +189,7 @@ class TipForm extends React.Component<Props, State> {
       'You have been blessed by Satoshi for your kindness.',
       'That’s your good deed for the day.',
     ];
-    return ' ' + praises[(tip ? tip.id : 0) % praises.length + 1];
+    return ' ' + praises[(tip ? tip.id : 0) % praises.length];
   };
 }
 

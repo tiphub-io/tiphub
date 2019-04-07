@@ -1,5 +1,5 @@
 from flask import Blueprint, g, jsonify, session
-from webargs import fields
+from webargs import fields, validate
 from webargs.flaskparser import use_args
 from boltathon.extensions import db
 from boltathon.util.auth import requires_auth
@@ -7,7 +7,7 @@ from boltathon.util.node import get_pubkey_from_credentials, make_invoice, looku
 from boltathon.util.errors import RequestError
 from boltathon.models.user import User, self_user_schema, public_user_schema, public_users_schema
 from boltathon.models.connection import Connection, public_connections_schema
-from boltathon.models.tip import Tip, tip_schema
+from boltathon.models.tip import Tip, tip_schema, tips_schema
 
 blueprint = Blueprint("api", __name__, url_prefix="/api")
 
@@ -16,6 +16,36 @@ blueprint = Blueprint("api", __name__, url_prefix="/api")
 @requires_auth
 def get_self_user():
   return jsonify(self_user_schema.dump(g.current_user))
+
+
+
+@blueprint.route('/users/<user_id>/tips', methods=['GET'])
+@use_args({
+  'user_id': fields.Integer(location='view_args', required=True),
+  'page': fields.Integer(required=False, missing=0, validate=validate.Range(0)),
+  'limit': fields.Integer(required=False, missing=30, validate=validate.Range(1, 30)),
+})
+def get_user_tips(args, **kwargs):
+  user = User.query.get(args['user_id'])
+  if not user:
+    raise RequestError(code=404, message='No user with that ID')
+
+  tips = Tip.query \
+    .filter_by(receiver_id=user.id) \
+    .filter(Tip.amount != None ) \
+    .filter(Tip.amount != 0) \
+    .paginate(
+      page=args['page'],
+      per_page=args['limit'],
+      error_out=False)
+  return jsonify({
+    'user': public_user_schema.dump(user),
+    'tips': tips_schema.dump(tips.items),
+    'pagination': {
+      'page': tips.page,
+      'pages': tips.pages,
+    },
+  })
 
 
 @blueprint.route('/users/<user_id>', methods=['GET'])
@@ -56,14 +86,15 @@ def update_user(args, **kwargs):
   return jsonify(self_user_schema.dump(g.current_user))
 
 
+
 @blueprint.route('/users/<user_id>/tip', methods=['POST'])
 @use_args({
   'user_id': fields.Integer(location='view_args', required=True),
   'sender': fields.Str(required=False, missing=None),
   'message': fields.Str(required=False, missing=None),
 })
-def post_invoice(args, **kwargs):
-  user = User.query.get(args.get('user_id'))
+def post_invoice(args, user_id, **kwargs):
+  user = User.query.get(user_id)
   if not user:
     raise RequestError(code=404, message='No user with that ID')
 
