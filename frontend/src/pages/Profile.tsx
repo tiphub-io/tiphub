@@ -3,6 +3,7 @@ import { Tab, Loader } from 'semantic-ui-react'
 import { withRouter, RouteComponentProps } from 'react-router';
 import ProfileHeader from '../components/ProfileHeader';
 import ProfileTips from '../components/ProfileTips';
+import EmbedForm from '../components/EmbedForm';
 import NodeForm from '../components/NodeForm';
 import api, { User, SelfUser } from '../api';
 import './Profile.less';
@@ -61,18 +62,7 @@ class Profile extends React.Component<Props, State> {
         render: () => <ProfileTips />,
       }, {
         menuItem: 'Embed',
-        render: () => (
-          <div>
-            Embed
-          </div>
-        ),
-      }, {
-        menuItem: 'Connections',
-        render: () => (
-          <div>
-            Connections
-          </div>
-        ),
+        render: () => <EmbedForm user={user} />,
       }, {
         menuItem: 'Config',
         render: () => {

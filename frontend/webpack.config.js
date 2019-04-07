@@ -8,6 +8,7 @@ const src = path.join(__dirname, 'src');
 const dist = path.join(__dirname, 'dist');
 
 const isDev = process.env.NODE_ENV !== 'production';
+const publicPath = isDev ? '/' : '/static';
 
 const typescriptLoader = {
   test: /\.tsx?$/,
@@ -33,9 +34,15 @@ const lessLoader = {
     'less-loader',
   ],
 };
-const urlLoader = {
+const fileLoader = {
   test: /\.(png|woff|woff2|eot|ttf|svg)$/,
-  loader: 'url-loader?limit=100000',
+  use: [{
+    loader: 'file-loader',
+    options: {
+      publicPath,
+      name: '[folder]/[name].[ext]',
+    },
+  }],
 }
 
 module.exports = {
@@ -47,7 +54,7 @@ module.exports = {
   output: {
     path: dist,
     filename: 'script.js',
-    publicPath: isDev ? '/' : '/static',
+    publicPath,
     chunkFilename: isDev ? '[name].chunk.js' : '[name].[chunkhash:8].chunk.js',
   },
   module: {
@@ -55,8 +62,8 @@ module.exports = {
       typescriptLoader,
       lessLoader,
       cssLoader,
-      urlLoader,
-    ],
+      fileLoader,
+    ].filter(r => !!r),
   },
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.mjs', '.json'],

@@ -259,7 +259,10 @@ export default class NodeForm extends React.Component<Props, State> {
           className="NodeForm-form-label-help"
           circular
           icon="help"
-          onClick={() => this.setState({ helpKey })}
+          onClick={(ev) => {
+            ev.preventDefault();
+            this.setState({ helpKey });
+          }}
         />
       </label>
     );

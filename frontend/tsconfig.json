@@ -13,5 +13,5 @@
     "lib": ["dom", "es2017"],
     "baseUrl": ".",
   },
-  "include": ["src", "webpack.config.ts"]
+  "include": ["./src", "./types"]
 }
