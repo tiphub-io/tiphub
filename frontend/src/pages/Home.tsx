@@ -2,6 +2,7 @@ import React from 'react';
 import { Button, Header, Divider, Search, Icon } from 'semantic-ui-react';
 import { redirectToSignIn } from 'blockstack.js';
 import { makeBackendUrl } from '../util/formatters';
+import UserSearch from '../components/UserSearch';
 import BlockstackIcon from '../images/blockstack.svg';
 import './Home.less';
 
@@ -56,7 +57,7 @@ const Home: React.SFC<{}> = () => (
         <Header as="h2">
           Find someone to tip
         </Header>
-        <Search size="large" fluid />
+        <UserSearch />
       </div>
     </div>
   </div>

@@ -21,6 +21,6 @@ export const CONNECTION_UI = {
     color: '#3700ff',
     icon: 'block layout' as SemanticICONS,
     url: (_: Connection) => `https://browser.blockstack.org`,
-    img: (c: Connection) => `https://gaia.blockstack.org/hub/${c.site_id}/avatar-0`,
+    img: (c: Connection) => `https://gaia.blockstack.org/hub/${c.site_id}//avatar-0`, // not a typo, two slashes
   },
 }

@@ -20,18 +20,27 @@ class User(db.Model):
     self.id = gen_random_id(User)
     self.date_created = datetime.now()
 
+  @staticmethod
+  def search_by_connection(query: str):
+    from boltathon.models.connection import Connection
+    return User.query \
+      .join(Connection) \
+      .filter(Connection.site_username.ilike('%{}%'.format(query))) \
+      .limit(5) \
+      .all()
+
 # Limited data (public view)
 class PublicUserSchema(ma.Schema):
   class Meta:
     model = User
     # Fields to expose
     fields = (
-      "id",
-      "pubkey",
-      "connections",
+      'id',
+      'pubkey',
+      'connections',
     )
 
-  connections = ma.Nested("PublicConnectionSchema", many=True)
+  connections = ma.Nested('PublicConnectionSchema', many=True, exclude=['user'])
 
 public_user_schema = PublicUserSchema()
 public_users_schema = PublicUserSchema(many=True)
@@ -42,17 +51,17 @@ class SelfUserSchema(ma.Schema):
     model = User
     # Fields to expose
     fields = (
-      "id",
-      "date_created",
-      "email",
-      "macaroon",
-      "cert",
-      "node_url",
-      "pubkey",
-      "connections",
+      'id',
+      'date_created',
+      'email',
+      'macaroon',
+      'cert',
+      'node_url',
+      'pubkey',
+      'connections',
     )
   
-  connections = ma.Nested("SelfConnectionSchema", many=True)
+  connections = ma.Nested('SelfConnectionSchema', many=True, exclude=['user'])
 
 self_user_schema = SelfUserSchema()
 self_users_schema = SelfUserSchema(many=True)

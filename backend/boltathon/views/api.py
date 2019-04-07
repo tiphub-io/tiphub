@@ -5,8 +5,8 @@ from boltathon.extensions import db
 from boltathon.util.auth import requires_auth
 from boltathon.util.node import get_pubkey_from_credentials, make_invoice, lookup_invoice
 from boltathon.util.errors import RequestError
-from boltathon.models.user import User, self_user_schema, public_user_schema
-from boltathon.models.connection import Connection
+from boltathon.models.user import User, self_user_schema, public_user_schema, public_users_schema
+from boltathon.models.connection import Connection, public_connections_schema
 from boltathon.models.tip import Tip, tip_schema
 
 blueprint = Blueprint("api", __name__, url_prefix="/api")
@@ -78,6 +78,12 @@ def post_invoice(args, **kwargs):
   db.session.add(tip)
   db.session.commit()
   return jsonify(tip_schema.dump(tip))
+
+
+@blueprint.route('/users/search/<query>', methods=['GET'])
+def search_users(query):
+  connections = Connection.search_usernames(query)
+  return jsonify(public_connections_schema.dump(connections))
 
 
 @blueprint.route('/tips/<tip_id>', methods=['GET'])

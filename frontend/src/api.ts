@@ -12,6 +12,7 @@ export interface Connection {
   site: ConnectionSite;
   site_id: string;
   site_username: string;
+  user: User;
 }
 
 export interface SelfConnection extends Connection {
@@ -60,6 +61,10 @@ class API {
 
   updateUser(id: number, args: Partial<SelfUser>) {
     return this.request<SelfUser>('PUT', `/users/${id}`, args);
+  }
+
+  searchUsers(query: string) {
+    return this.request<Connection[]>('GET', `/users/search/${query}`);
   }
 
   getTip(id: number) {

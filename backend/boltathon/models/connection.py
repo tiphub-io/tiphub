@@ -22,6 +22,11 @@ class Connection(db.Model):
     connection = Connection.query.filter_by(site=site, site_id=site_id).first()
     return connection.user if connection else None
 
+  @staticmethod
+  def search_usernames(query: str):
+    return Connection.query.filter(Connection.site_username.ilike('%{}%'.format(query))).all()
+
+
 # Limited data (public view)
 class PublicConnectionSchema(ma.Schema):
   class Meta:
@@ -31,7 +36,10 @@ class PublicConnectionSchema(ma.Schema):
       "site",
       "site_id",
       "site_username",
+      "user",
     )
+
+  user = ma.Nested("PublicUserSchema", exclude=['connections'])
 
 public_connection_schema = PublicConnectionSchema()
 public_connections_schema = PublicConnectionSchema(many=True)
@@ -46,7 +54,10 @@ class SelfConnectionSchema(ma.Schema):
       "site_id",
       "site_username",
       "date_created",
+      "user",
     )
+
+  user = ma.Nested("SelfUserSchema", exclude=['connections'])
 
 self_connection_schema = SelfConnectionSchema()
 self_connections_schema = SelfConnectionSchema(many=True)
