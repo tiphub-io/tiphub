@@ -4,6 +4,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const DotenvPlugin = require('dotenv-webpack');
 const WebpackPwaManifest = require('webpack-pwa-manifest');
+const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
 
 const src = path.join(__dirname, 'src');
 const dist = path.join(__dirname, 'dist');
@@ -74,24 +75,26 @@ module.exports = {
     new MiniCssExtractPlugin({
       filename: isDev ? '[name].css' : '[name].[hash:8].css',
     }),
-    new HtmlWebpackPlugin({
-      template: `${src}/index.html`,
+    new FaviconsWebpackPlugin({
+      logo: path.join(src, 'images/favicon.png'),
       inject: true,
     }),
-    new DotenvPlugin({ systemvars: true }),
     new WebpackPwaManifest({
       name: 'TipHub',
       fingerprints: false,
       description: 'Send sats to your favorite open source contributors!',
       background_color: '#333',
       crossorigin: 'use-credentials',
-      icons: [
-        {
-          src: path.join(src, 'images/favicon.png'),
-          sizes: [96, 128, 192, 256, 384, 512],
-        },
-      ]
+      icons: [{
+        src: path.join(src, 'images/favicon.png'),
+        sizes: [96, 128, 192, 256, 384, 512],
+      }],
     }),
+    new HtmlWebpackPlugin({
+      template: `${src}/index.html`,
+      inject: true,
+    }),
+    new DotenvPlugin({ systemvars: true }),
     isDev && new webpack.HotModuleReplacementPlugin(),
   ].filter(p => !!p),
   devServer: {
