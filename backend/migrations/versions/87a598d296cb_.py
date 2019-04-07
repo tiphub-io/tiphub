@@ -1,8 +1,8 @@
-"""Initial scaffolding
+"""empty message
 
-Revision ID: 8382b265cfd4
+Revision ID: 87a598d296cb
 Revises: 
-Create Date: 2019-04-06 19:15:57.806818
+Create Date: 2019-04-06 20:14:39.256659
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '8382b265cfd4'
+revision = '87a598d296cb'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -22,8 +22,8 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('date_created', sa.DateTime(), nullable=True),
     sa.Column('email', sa.String(length=255), nullable=True),
-    sa.Column('macaroon', sa.String(length=1023), nullable=True),
-    sa.Column('cert', sa.String(length=2047), nullable=True),
+    sa.Column('macaroon', sa.String(length=2047), nullable=True),
+    sa.Column('cert', sa.String(length=4095), nullable=True),
     sa.Column('node_url', sa.String(length=255), nullable=True),
     sa.Column('pubkey', sa.String(length=255), nullable=True),
     sa.PrimaryKeyConstraint('id')

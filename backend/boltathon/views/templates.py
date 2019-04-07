@@ -1,9 +1,13 @@
-from flask import Blueprint, session, request, current_app, url_for
-from boltathon.models.user import site_user, user_lnd
+from flask import Blueprint, session, request, current_app, url_for, g
+from boltathon.models.user import User
+from boltathon.extensions import db
 from boltathon.util.lnaddr import lndecode
+from boltathon.util.auth import requires_auth
+from boltathon.util.errors import RequestError
 import rpc_pb2 as ln
 import rpc_pb2_grpc as lnrpc
 import grpc
+from base64 import b64decode
 
 blueprint = Blueprint("templates", __name__, url_prefix="/")
 
@@ -14,39 +18,54 @@ def index():
     return current_app.send_static_file('index.html')
 
 
-@blueprint.route('/users/<uuid:user_id>', methods=['GET', 'POST'])
+@blueprint.route('/users/<user_id>', methods=['GET', 'POST'])
+@requires_auth
 def register_lnd(user_id):
     if request.method == "POST":
-        if 'user_id' in session and session['user_id'] == user_id:
-            print("register_lnd: authorized user session, got form: {}".format(request.form))
-            macaroon = request.form['macaroon']
-            grpc_url = request.form['grpc_url']
-            print(request.files['tls_cert'])
+        print("register_lnd: authorized user session, got form: {}".format(request.form))
+        macaroon = request.form['macaroon']
+        grpc_url = request.form['grpc_url']
+        cert = request.form['tls_cert']
+        cert = request.form['tls_cert']
 
-            lnd = (macaroon, grpc_url, request.files['tls_cert'].read())
-            payment_request = get_invoice(*lnd).payment_request
-            decoded = lndecode(payment_request)
+        lnd = (macaroon, grpc_url, b64decode(cert))
+        payment_request = get_invoice(*lnd).payment_request
+        decoded = lndecode(payment_request)
 
-            if payment_request and decoded.pubkey:
-                user_lnd_entry = (*lnd, decoded.pubkey)
-                print("register_lnd: everything checks out, inserting: {}".format(user_lnd_entry))
-                user_lnd[user_id] = user_lnd_entry
-            else:
-                raise hell
+        if not payment_request or not decoded.pubkey:
+            raise RequestError(code=400, message='Invalid node credentials')
 
-            return 'You\'re done. Direct your donators <a href="{}">here</a>'.format(url_for("templates.new_invoice", user_id=user_id))
-        return "You are not logged in."
-    return '''
-        <form method=post enctype=multipart/form-data>
-            <p>Macaroon (in hex):<br>
-            <input type=text name=macaroon>
-            <p>gRPC URL:<br>
-            <input type=text name=grpc_url>
-            <p>TLS cert:<br>
-            <input type=file name=tls_cert>
-            <p><input type=submit value=Login>
-        </form>
-    '''
+        g.current_user.node_url = grpc_url
+        g.current_user.macaroon = macaroon
+        g.current_user.cert = cert
+        g.current_user.pubkey = decoded.pubkey.serialize().hex()
+        g.current_user.email = request.form['email']
+        db.session.add(g.current_user)
+        db.session.commit()
+
+        return 'You\'re done. Direct your donators <a href="{}">here</a>'.format(url_for("templates.new_invoice", user_id=user_id))
+    else:
+        return '''
+            <form method=post enctype=multipart/form-data>
+                <p>gRPC URL:<br>
+                <input type=text name="grpc_url" value="{}">
+                <p>Macaroon (in hex):<br>
+                <input type=text name="macaroon" value="{}">
+                <p>TLS cert (base64):<br>
+                <input type=text name="tls_cert" value="{}">
+                <p>Email (optional):<br>
+                <input type=text name="email" value="{}">
+                <p>Pubkey (filled in if node is set):<br>
+                <input type=text value="{}" disabled>
+                <p><input type=submit value=Login>
+            </form>
+        '''.format(
+            g.current_user.node_url or '',
+            g.current_user.macaroon or '',
+            g.current_user.cert or '',
+            g.current_user.email or '',
+            g.current_user.pubkey or '',
+        )
 
 
 def get_invoice(macaroon, grpc_url, tls_cert):
@@ -56,13 +75,11 @@ def get_invoice(macaroon, grpc_url, tls_cert):
     return stub.AddInvoice(ln.Invoice(), metadata=[('macaroon', macaroon)])
 
 
-@blueprint.route('/users/<uuid:user_id>/new_invoice')
+@blueprint.route('/users/<user_id>/new_invoice')
 def new_invoice(user_id):
-    if 'user_id' in session and session['user_id'] == user_id:
-        if user_id in user_lnd:
-            invoice = get_invoice(*user_lnd[user_id][:3])
-            return '<a href="lightning:{}">Pay with Lightning</a>'.format(invoice.payment_request)
-        else:
-            raise hell
-    else:
-        raise hell
+    user = User.query.filter_by(id=user_id).first()
+    if not user:
+        raise RequestError(code=404, message="No user with that ID")
+
+    invoice = get_invoice(user.macaroon, user.node_url, b64decode(user.cert))
+    return '<a href="lightning:{}">Pay with Lightning</a>'.format(invoice.payment_request)

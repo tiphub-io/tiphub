@@ -16,3 +16,8 @@ class Connection(db.Model):
     self.site_id = site_id
     self.site_username = site_username
     self.date_created = datetime.now()
+
+  @staticmethod
+  def get_user_by_connection(site: str, site_id: str):
+    connection = Connection.query.filter_by(site=site, site_id=site_id).first()
+    return connection.user if connection else None
