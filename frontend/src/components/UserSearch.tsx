@@ -42,11 +42,14 @@ class UserSearch extends React.Component<RouteComponentProps, State> {
     api.searchUsers(value).then(connections => {
       if (this.state.value !== value) return;
       const results = connections.map(c => ({
+        // Display
         key: `${c.site} ${c.site_username}`,
         title: c.site_username,
         description: CONNECTION_UI[c.site].name,
         image: CONNECTION_UI[c.site].img(c),
+        // Data for handler
         userid: c.user.id,
+        site: c.site,
       }));
       this.setState({ results, isLoading: false });
     }).catch(err => {
@@ -56,7 +59,7 @@ class UserSearch extends React.Component<RouteComponentProps, State> {
   };
 
   private goToTip = (_: any, data: SearchResultData) => {
-    this.props.history.push(`/user/${data.result.userid}/tip`);
+    this.props.history.push(`/user/${data.result.userid}/tip?site=${data.result.site}`);
   };
 }
 

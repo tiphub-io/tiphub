@@ -35,9 +35,9 @@ interface State {
   connection: Connection;
 }
 
-const makeCode = (id: number, name: string, pubkey: string, img: string) =>
+const makeCode = (id: number, name: string, pubkey: string, img: string, site: string) =>
 `<p align="center">
-  <a target="_blank" rel="noopener noreferrer" href="${window.location.origin}/user/${id}/tip">
+  <a target="_blank" rel="noopener noreferrer" href="${window.location.origin}/user/${id}/tip?site=${site}">
     <img src="${window.location.origin}/${img}" alt="Tip ${name} on TipHub" height="60">
     <br />
     My pubkey starts with <code>${pubkey.slice(0, 8)}</code>
@@ -53,7 +53,7 @@ export default class EmbedForm extends React.Component<Props, State> {
   render() {
     const { user } = this.props;
     const { color, connection } = this.state;
-    const code = makeCode(user.id, connection.site_username, user.pubkey, color.img);
+    const code = makeCode(user.id, connection.site_username, user.pubkey, color.img, connection.site);
     return (
       <div className="EmbedForm">
         <Form className="EmbedForm-form" size="large">

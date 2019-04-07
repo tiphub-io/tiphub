@@ -1,15 +1,19 @@
 import React from 'react';
 import { Form, Segment, Button, TextArea, Divider } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
+import { withRouter, RouteComponentProps } from 'react-router';
+import { parse } from 'query-string';
 import QRCode from 'qrcode.react';
 import api, { Tip, User } from '../api';
 import { CONNECTION_UI } from '../util/constants';
 import './TipForm.less';
 
 
-interface Props {
+interface OwnProps {
   user: User;
-}
+};
+
+type Props = RouteComponentProps & OwnProps;
 
 interface State {
   sender: string;
@@ -19,7 +23,7 @@ interface State {
   isSubmitting: boolean;
 }
 
-export default class TipForm extends React.Component<Props, State> {
+class TipForm extends React.Component<Props, State> {
   state: State = {
     sender: '',
     message: '',
@@ -33,9 +37,10 @@ export default class TipForm extends React.Component<Props, State> {
   }
 
   render() {
-    const { user } = this.props;
-    const { sender, message, tip, error, isSubmitting } = this.state;
-    const connection = user.connections[0];
+    const { user, location } = this.props;
+    const { sender, message, tip, isSubmitting } = this.state;
+    const { site } = parse(location.search);
+    const connection = user.connections.find(c => c.site === site) || user.connections[0];
 
     let content;
     if (tip) {
@@ -187,3 +192,5 @@ export default class TipForm extends React.Component<Props, State> {
     return ' ' + praises[(tip ? tip.id : 0) % praises.length + 1];
   };
 }
+
+export default withRouter(TipForm);
