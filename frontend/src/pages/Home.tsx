@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button, Header, Divider, Search, Icon } from 'semantic-ui-react';
 import { redirectToSignIn } from 'blockstack.js';
+import { Link } from 'react-router-dom';
 import { makeBackendUrl } from '../util/formatters';
 import UserSearch from '../components/UserSearch';
 import BlockstackIcon from '../images/blockstack.svg';
@@ -20,7 +21,9 @@ const Home: React.SFC<{}> = () => (
         Set up or conribute to lightning tips for open source projects.
         Non-custodial, direct to the creators.
       </p>
-      <Button size="huge">Learn more</Button>
+      <Link to="/about">
+        <Button size="huge" secondary>Learn more</Button>
+      </Link>
     </div>
     <div className="Home-forms">
       <div className="Home-forms-start">

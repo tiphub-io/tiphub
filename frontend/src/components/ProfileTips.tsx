@@ -1,4 +1,5 @@
 import React from 'react';
+import moment from 'moment';
 import { Placeholder, Feed, Pagination, Image, Segment, Header, Icon, PaginationProps } from 'semantic-ui-react';
 import api, { User, Tip, PagesData } from '../api';
 import './ProfileTips.less';
@@ -55,12 +56,12 @@ export default class ProfileTips extends React.Component<Props, State> {
             <Image avatar src={this.getRandomImage(t.id)} />
           </Feed.Label>
           <Feed.Content>
+            <Feed.Date>
+              {moment(t.date_created).fromNow()}
+            </Feed.Date>
             <Feed.Summary>
-              <Feed.User>{t.sender || <em>Anonymous tipper</em>}</Feed.User>
-              {' '}Tipped <strong>{t.amount} sats</strong> to you at{' '}
-              <Feed.Date>
-                {new Date(t.date_created).toLocaleString()}
-              </Feed.Date>
+              <strong>{t.sender || <em>Anonymous tipper</em>}</strong>
+              {' '}tipped you <strong>{t.amount} sats</strong>
             </Feed.Summary>
             {t.message && (
               <Feed.Extra text>"{t.message}"</Feed.Extra>

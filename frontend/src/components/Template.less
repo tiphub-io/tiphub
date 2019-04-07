@@ -1,3 +1,5 @@
+@import '../style//variables.less';
+
 .Template {
   display: flex;
   flex-direction: column;
@@ -23,13 +25,26 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 1rem 0;
+      padding: 1.25rem 0;
+    }
+
+    &-title img {
+      display: block;
+      height: 2.2rem;
     }
 
     &-menu {
       a {
         padding: 0 0.1rem;
         margin-left: 1rem;
+        font-size: 1.35rem;
+        color: #333;
+        opacity: 0.3;
+
+        &:hover {
+          color: @primary-color;
+          opacity: 1;
+        }
       }
     }
   }

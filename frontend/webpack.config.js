@@ -80,9 +80,9 @@ module.exports = {
     }),
     new DotenvPlugin({ systemvars: true }),
     new WebpackPwaManifest({
-      name: 'Boltathon',
+      name: 'TipHub',
       fingerprints: false,
-      description: 'Tip open source developers with Lightning',
+      description: 'Send sats to your favorite open source contributors!',
       background_color: '#333',
       crossorigin: 'use-credentials',
       icons: [

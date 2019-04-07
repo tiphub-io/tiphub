@@ -1,5 +1,5 @@
 // Style dependencies first so our styles override them
-import 'semantic-ui-css/semantic.min.css';
+import './style/semantic-ui-theme.css';
 import './style/index.less';
 
 import React from 'react';

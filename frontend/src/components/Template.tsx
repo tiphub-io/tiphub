@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import TipHubLogo from '../images/logo.svg';
 import './Template.less';
 
 
@@ -16,7 +17,9 @@ export default class Template extends React.Component<Props> {
         <div className="Template-header">
           <div className="Template-header-inner">
             <Link to="/">
-              <h1 className="Template-header-title">Boltathon</h1>
+              <h1 className="Template-header-title">
+                <img src={TipHubLogo} alt="TipHub" />
+              </h1>
             </Link>
             <div className="Template-header-menu">
               <Link to="/about">About</Link>
