@@ -35,10 +35,10 @@ interface State {
   connection: Connection;
 }
 
-const makeCode = (username: string, pubkey: string, img: string) =>
+const makeCode = (id: string, name: string, pubkey: string, img: string) =>
 `<p align="center">
-  <a target="_blank" rel="noopener noreferrer" href="${env.SITE_URL}">
-    <img src="${window.location.origin}/${img}" alt="Tip ${username} on TipHub" height="60">
+  <a target="_blank" rel="noopener noreferrer" href="${window.location.origin}/user/${id}/tip">
+    <img src="${window.location.origin}/${img}" alt="Tip ${name} on TipHub" height="60">
     <br />
     My pubkey starts with <code>${pubkey.slice(0, 8)}</code>
   </a>
@@ -53,7 +53,7 @@ export default class EmbedForm extends React.Component<Props, State> {
   render() {
     const { user } = this.props;
     const { color, connection } = this.state;
-    const code = makeCode(connection.site_username, user.pubkey, color.img);
+    const code = makeCode(user.id, connection.site_username, user.pubkey, color.img);
     return (
       <div className="EmbedForm">
         <Form className="EmbedForm-form" size="large">
@@ -63,7 +63,7 @@ export default class EmbedForm extends React.Component<Props, State> {
               selection
               value={connection.site}
               options={user.connections.map(c => ({
-                text: c.site,
+                text: CONNECTION_UI[c.site].name,
                 value: c.site,
               }))}
               onChange={this.handleChangeSite}
@@ -92,15 +92,7 @@ export default class EmbedForm extends React.Component<Props, State> {
             <SyntaxHighlighter language="html" children={code} style={syntaxStyle} />
           </div>
           <div className="EmbedForm-embed-preview">
-            <div>
-              <p style={{ textAlign: 'center' }}>
-                <a target="_blank" rel="noopener noreferrer" href={env.SITE_URL}>
-                  <img src={color.img} alt={`Tip ${connection.site_username} on TipHub`} height="60" />
-                  <br />
-                  My pubkey starts with <code>{user.pubkey.slice(0, 8)}</code>
-                </a>
-              </p>
-            </div>
+            <div dangerouslySetInnerHTML={{ __html: code }} />
           </div>
         </div>
       </div>
