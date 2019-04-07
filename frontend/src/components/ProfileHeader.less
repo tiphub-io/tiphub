@@ -1,0 +1,54 @@
+.ProfileHeader {
+  display: flex;
+  align-items: center;
+  margin-bottom: 2rem;
+
+  &-image {
+    width: 8rem;
+    height: 8rem;
+    flex-shrink: 0;
+    margin-right: 2rem;
+    border-radius: 100%;
+    overflow: hidden;
+
+    img {
+      height: 100%;
+      width: 100%;
+    }
+
+    .placeholder,
+    .placeholder .image {
+      height: 100% !important;
+    }
+  }
+
+  &-info {
+    width: 100%;
+
+    &-name {
+      font-size: 1.8rem;
+      margin-bottom: 0.75rem;
+    }
+
+    &-pubkey {
+      font-size: 0.8rem;
+      opacity: 0.4;
+      margin-bottom: 1rem;
+    }
+
+    &-connections {
+      display: flex;
+      align-items: center;
+      font-size: 1rem;
+      opacity: 0.7;
+
+      &:hover {
+        opacity: 1;
+      }
+    }
+
+    .placeholder {
+      transform: translateY(-10%);
+    }
+  }
+}

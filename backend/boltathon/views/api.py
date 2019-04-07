@@ -4,9 +4,25 @@ from webargs.flaskparser import use_args
 from boltathon.extensions import db
 from boltathon.util.auth import requires_auth
 from boltathon.util.node import get_pubkey_from_credentials
-from boltathon.models.user import self_user_schema
+from boltathon.util.errors import RequestError
+from boltathon.models.user import User, self_user_schema, public_user_schema
 
 blueprint = Blueprint("api", __name__, url_prefix="/api")
+
+
+@blueprint.route('/users/me', methods=['GET'])
+@requires_auth
+def get_self_user():
+  return jsonify(self_user_schema.dump(g.current_user))
+
+
+@blueprint.route('/users/<user_id>', methods=['GET'])
+def get_user(user_id):
+  user = User.query.filter_by(id=user_id).first()
+  if not user:
+    raise RequestError(code=404, message='No user with that ID')
+  return jsonify(public_user_schema.dump(user))
+
 
 @blueprint.route('/users/<user_id>', methods=['PUT'])
 @requires_auth

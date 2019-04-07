@@ -8,12 +8,12 @@ export enum ConnectionSite {
 
 export interface Connection {
   site: ConnectionSite;
-  siteUsername: string;
+  site_username: string;
 }
 
 export interface SelfConnection extends Connection {
-  siteId: string;
-  dateCreated: string;
+  site_id: string;
+  date_created: string;
 }
 
 export interface User {
@@ -23,11 +23,11 @@ export interface User {
 }
 
 export interface SelfUser extends User {
-  dateCreated: string;
+  date_created: string;
   email: string;
   macaroon: string;
   cert: string;
-  nodeUrl: string;
+  node_url: string;
   connections: SelfConnection[];
 }
 
@@ -39,6 +39,14 @@ class API {
   }
 
   // Public methods
+  getSelf() {
+    return this.request<SelfUser>('GET', '/users/me');
+  }
+
+  getUser(id: number) {
+    return this.request<User>('GET', `/users/${id}`);
+  }
+
   updateUser(id: number, args: Partial<SelfUser>) {
     return this.request<SelfUser>('PUT', `/users/${id}`, args);
   }
@@ -63,6 +71,7 @@ class API {
       query = `?${stringify(args as any)}`;
     }
 
+    console.log(this.url);
     return fetch(this.url + path + query, {
       method,
       headers,
@@ -83,7 +92,7 @@ class API {
       }
       return res.json();
     })
-    .then(res => res.data as R)
+    .then(res => res as R)
     .catch((err) => {
       console.error(`API error calling ${method} ${path}`, err);
       throw err;

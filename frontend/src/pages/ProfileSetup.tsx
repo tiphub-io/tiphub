@@ -14,4 +14,4 @@ const ProfileSetup: React.SFC<Props> = ({ match, history }) => {
   );
 };
 
-export default ProfileSetup;
+export default withRouter(ProfileSetup);
