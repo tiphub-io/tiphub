@@ -75,7 +75,7 @@ class Profile extends React.Component<Props, State> {
             return null;
           }
           const form = {
-            nodeUrl: u.node_url,
+            node_url: u.node_url,
             macaroon: u.macaroon,
             cert: u.cert,
             email: u.email,
