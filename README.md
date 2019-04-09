@@ -1,12 +1,6 @@
 # TipHub
 
-Send sats to your favorite open source contributors! Or to this one:
-
-<a target="_blank" rel="noopener noreferrer" href="https://boltathon.herokuapp.com/user/1466052541/tip?site=github">
-  <img src="https://boltathon.herokuapp.com//static/images/tip-button-orange.png" alt="Tip wbobeirne on TipHub" height="60">
-  <br />
-  My pubkey starts with <code>02458b08</code>
-</a>
+Send sats to your favorite open source contributors!
 
 ## Development
 
