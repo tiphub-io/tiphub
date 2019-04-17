@@ -86,7 +86,7 @@ def top_donors_svg(receiver_id):
     tip_strings.extend(['<tspan opacity="0.3">This could be you</tspan>'] * (3 - len(tip_strings)))
 
     svg = '''
-<svg viewBox="0 0 172 100" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<svg viewBox="0 0 150 100" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <g id="Artboard" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
         <g id="gold-medal" transform="translate(5.000000, 5.000000)" fill-rule="nonzero">
             <path d="M13,27 C5.85,27 0,21.15 0,14 C0,6.85 5.85,1 13,1 C20.15,1 26,6.85 26,14 C26,21.15 20.15,27 13,27 Z" id="Path" fill="#DBAB56"></path>

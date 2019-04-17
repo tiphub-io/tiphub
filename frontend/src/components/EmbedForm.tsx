@@ -33,27 +33,38 @@ interface Props {
 interface State {
   color: typeof COLORS[0];
   connection: Connection;
+  showLeaderboard: boolean;
 }
 
-const makeCode = (id: number, name: string, pubkey: string, img: string, site: string) =>
+const makeCode = (id: number, name: string, pubkey: string, img: string, site: string, showLeaderboard: boolean) =>
 `<p align="center">
   <a target="_blank" rel="noopener noreferrer" href="${window.location.origin}/user/${id}/tip?site=${site}">
     <img src="${window.location.origin}${img}" alt="Tip ${name} on TipHub" height="60">
     <br />
     My pubkey starts with <code>${pubkey.slice(0, 8)}</code>
   </a>
+  ${showLeaderboard ? (`
+    <br/>
+    <br/>
+    <strong>Top Donors</strong>
+    <br/>
+    <div style="border: 1px solid #EEE; border-radius: 4px; padding: 10px 10px 0;">
+      <img src="http://localhost:5000/users/${id}/top_donors.svg" alt="Tipping leaderboard" height="160">
+    </div>
+  `) : ''}
 </p>`;
 
 export default class EmbedForm extends React.Component<Props, State> {
   state: State = {
     color: COLORS[0],
     connection: this.props.user.connections[0],
+    showLeaderboard: true,
   };
   
   render() {
     const { user } = this.props;
-    const { color, connection } = this.state;
-    const code = makeCode(user.id, connection.site_username, user.pubkey, color.img, connection.site);
+    const { color, connection, showLeaderboard } = this.state;
+    const code = makeCode(user.id, connection.site_username, user.pubkey, color.img, connection.site, showLeaderboard);
     return (
       <div className="EmbedForm">
         <Form className="EmbedForm-form" size="large">
@@ -79,6 +90,13 @@ export default class EmbedForm extends React.Component<Props, State> {
                 value: color.name,
               }))}
               onChange={this.handleChangeColor}
+            />
+          </Form.Field>
+          <Form.Field>
+            <Form.Checkbox
+              label="Show leaderboard"
+              checked={showLeaderboard}
+              onChange={this.handleChangeLeaderboard}
             />
           </Form.Field>
           <CopyToClipboard text={code}>
@@ -108,5 +126,9 @@ export default class EmbedForm extends React.Component<Props, State> {
     console.log(data);
     const connection = this.props.user.connections.find(c => c.site === data.value) as Connection;
     this.setState({ connection });
+  };
+
+  private handleChangeLeaderboard = (_: any, data: any) => {
+    this.setState({ showLeaderboard: data.checked });
   };
 }
