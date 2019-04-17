@@ -7,7 +7,6 @@ from boltathon.util.errors import RequestError
 from boltathon.util.node import make_invoice, get_pubkey_from_credentials, lookup_invoice
 from sqlalchemy import func
 import io
-import svgwrite
 import random
 
 blueprint = Blueprint("templates", __name__, url_prefix="/")
