@@ -1,3 +1,4 @@
+require('dotenv').config();
 const path = require('path');
 const webpack = require('webpack');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
@@ -10,7 +11,7 @@ const src = path.join(__dirname, 'src');
 const dist = path.join(__dirname, 'dist');
 
 const isDev = process.env.NODE_ENV !== 'production';
-const publicPath = isDev ? '/' : '/static';
+const publicPath =  isDev ? '/' : `${process.env.PUBLIC_PATH || ''}/static`;
 
 const typescriptLoader = {
   test: /\.tsx?$/,

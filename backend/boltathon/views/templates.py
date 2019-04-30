@@ -217,6 +217,9 @@ def top_donors_svg(receiver_id):
 
     return send_file(io.BytesIO(bytes(svg, 'utf-8')), mimetype='image/svg+xml')
 
+@blueprint.route('/manifest.json')
+def manifest():
+    return current_app.send_static_file('manifest.json')
 
 @blueprint.route('/', defaults={'path': ''})
 @blueprint.route('/<path:path>')
