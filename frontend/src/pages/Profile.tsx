@@ -5,6 +5,7 @@ import ProfileHeader from '../components/ProfileHeader';
 import ProfileTips from '../components/ProfileTips';
 import EmbedForm from '../components/EmbedForm';
 import NodeForm from '../components/NodeForm';
+import ConnectionsForm from '../components/ConnectionsForm';
 import api, { User, SelfUser } from '../api';
 import './Profile.less';
 
@@ -87,6 +88,15 @@ class Profile extends React.Component<Props, State> {
               onSubmit={() => alert('Saved!')}
             />
           );
+        },
+      }, {
+        menuItem: 'Connections',
+        render: () => {
+          const u = user as SelfUser;
+          if (!u || !u.macaroon) {
+            return null;
+          }
+          return <ConnectionsForm user={u} />;
         },
       }];
       content = (

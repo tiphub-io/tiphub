@@ -2,7 +2,7 @@ from flask import Blueprint, g, jsonify, session
 from webargs import fields, validate
 from webargs.flaskparser import use_args
 from boltathon.extensions import db
-from boltathon.util.auth import requires_auth
+from boltathon.util.auth import requires_auth, get_authed_user
 from boltathon.util.node import get_pubkey_from_credentials, make_invoice, lookup_invoice
 from boltathon.util.errors import RequestError
 from boltathon.models.user import User, self_user_schema, public_user_schema, public_users_schema
@@ -145,15 +145,14 @@ def get_tip(tip_id):
 })
 def blockstack_auth(args):
   # TODO: Server-side verification
-   # Find or create a new user and add the connection
+  # Find or create a new user and add the connection
   user = Connection.get_user_by_connection(
       site='blockstack',
       site_id=args.get('id'),
   )
   if not user:
-    if session['user_id']:
-      user = User.query.get(session['user_id'])
-    else:
+    user = get_authed_user()
+    if not user:
       user = User()
     connection = Connection(
         userid=user.id,
