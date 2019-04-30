@@ -1,0 +1,31 @@
+<p style="margin: 0 0 20px;">
+  We tried to generate an invoice for someone to tip you, but were unable to
+  contact your node. We got back the following error:
+</p>
+
+<p style="margin: 10px 0; padding: 20px; background: #fff8f8; border: 1px solid #dea9a9; color: #862727;">
+  “{{ args.error }}”
+</p>
+
+<p style="margin: 0 0 20px;">
+  You can update your node's connection settings below. If you need help
+  fixing the problem, don't hesitate to post in our
+  <a href="{{ args.support_url }}" style="color: {{ UI.PRIMARY }};">GitHub issue queue</a>.
+</p>
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+      <td bgcolor="#ffffff" align="center" style="padding: 40px 30px 40px 30px;">
+          <table border="0" cellspacing="0" cellpadding="0">
+              <tr>
+                  <td align="center" style="border-radius: 3px;" bgcolor="{{ UI.PRIMARY }}">
+                      <a href="{{ args.config_url }}" target="_blank"
+                         style="font-size: 20px; font-family: Helvetica, Arial, sans-serif; color: #ffffff; text-decoration: none; color: #ffffff; text-decoration: none; padding: 20px 50px; border-radius: 4px; border: 1px solid {{ UI.PRIMARY }}; display: inline-block;">
+                          Change Node Config
+                      </a>
+                  </td>
+              </tr>
+          </table>
+      </td>
+  </tr>
+</table>

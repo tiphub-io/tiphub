@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Segment, Button, TextArea, Divider } from 'semantic-ui-react';
+import { Form, Segment, Button, TextArea, Divider, Message } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 import { withRouter, RouteComponentProps } from 'react-router';
 import { parse } from 'query-string';
@@ -38,7 +38,7 @@ class TipForm extends React.Component<Props, State> {
 
   render() {
     const { user, location } = this.props;
-    const { sender, message, tip, isSubmitting } = this.state;
+    const { sender, message, tip, isSubmitting, error } = this.state;
     const { site } = parse(location.search);
     const connection = user.connections.find(c => c.site === site) || user.connections[0];
 
@@ -126,6 +126,9 @@ class TipForm extends React.Component<Props, State> {
           />
           You’re tipping {connection.site_username}
         </div>
+        {error && (
+          <Message error>{error}</Message>
+        )}
         <Segment className="TipForm-card" size="massive" loading={isSubmitting}>
           {content}
         </Segment>
@@ -171,7 +174,7 @@ class TipForm extends React.Component<Props, State> {
         let newTip = await api.getTip(tip.id);
         this.setState({ tip: newTip });
       } catch(err) {
-        console.error(err);
+        this.setState({ error: err.message });
       }
     }
     setTimeout(this.pollTip, 3000);

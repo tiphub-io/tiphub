@@ -1,10 +1,13 @@
-from flask import Blueprint, g, jsonify, session
+from flask import Blueprint, g, jsonify, session, current_app
 from webargs import fields, validate
 from webargs.flaskparser import use_args
+from grpc import RpcError
 from boltathon.extensions import db
+from boltathon.util import frontend_url
 from boltathon.util.auth import requires_auth
 from boltathon.util.node import get_pubkey_from_credentials, make_invoice, lookup_invoice
 from boltathon.util.errors import RequestError
+from boltathon.util.mail import send_email
 from boltathon.models.user import User, self_user_schema, public_user_schema, public_users_schema
 from boltathon.models.connection import Connection, public_connections_schema
 from boltathon.models.tip import Tip, tip_schema, tips_schema
@@ -98,17 +101,36 @@ def post_invoice(args, user_id, **kwargs):
   if not user:
     raise RequestError(code=404, message='No user with that ID')
 
-  invoice = make_invoice(user.node_url, user.macaroon, user.cert)
-  tip = Tip(
-    receiver_id=args.get('user_id'),
-    sender=args.get('sender'),
-    message=args.get('message'),
-    payment_request=invoice.payment_request,
-    rhash=invoice.r_hash.hex(),
-  )
-  db.session.add(tip)
-  db.session.commit()
-  return jsonify(tip_schema.dump(tip))
+  err = None
+
+  try:
+    invoice = make_invoice(user.node_url, user.macaroon, user.cert)
+    tip = Tip(
+      receiver_id=args.get('user_id'),
+      sender=args.get('sender'),
+      message=args.get('message'),
+      payment_request=invoice.payment_request,
+      rhash=invoice.r_hash.hex(),
+    )
+    db.session.add(tip)
+    db.session.commit()
+    return jsonify(tip_schema.dump(tip))
+  except RequestError as e:
+    err = 'Request error: {}'.format(e.message)
+  except RpcError as e:
+    err = 'RPC error: {}'.format(e.details())
+  except Exception as e:
+    err = 'Unknown exception: {}'.format(str(e))
+    current_app.logger.info('Unknown error encountered while trying to generate an invoice for user {}'.format(user.id))
+    current_app.logger.error(e)
+
+  if err:
+    send_email(user, 'tip_error', {
+      'error': err,
+      'config_url': frontend_url('/user/me?tab=config'),
+      'support_url': 'https://github.com/tiphub-io/tiphub/issues',
+    })
+    raise RequestError(code=500, message='Failed to generate a tip invoice')
 
 
 @blueprint.route('/users/search/<query>', methods=['GET'])
@@ -124,16 +146,16 @@ def get_tip(tip_id):
     raise RequestError(code=404, message='No tip with that ID')
 
   # Check with node if it's been paid
-  invoice = lookup_invoice(
-    tip.rhash,
-    tip.recipient.node_url,
-    tip.recipient.macaroon,
-    tip.recipient.cert,
-  )
-  if hasattr(invoice, 'amt_paid_sat'):
-    tip.amount = invoice.amt_paid_sat
-    db.session.add(tip)
-    db.session.commit()
+  if not tip.amount:
+    invoice = lookup_invoice(
+      tip.rhash,
+      tip.recipient.node_url,
+      tip.recipient.macaroon,
+      tip.recipient.cert,
+    )
+    if hasattr(invoice, 'amt_paid_sat') and invoice.amt_paid_sat:
+      tip.confirm(invoice.amt_paid_sat)
+      db.session.commit()
 
   return jsonify(tip_schema.dump(tip))
 
