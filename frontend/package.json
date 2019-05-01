@@ -10,6 +10,7 @@
   "dependencies": {
     "blockstack.js": "git://github.com/wbobeirne/blockstack.js#efdbc848f8bd73905e0ed6b98b48ca7e1645900f",
     "css-loader": "2.1.1",
+    "dotenv": "7.0.0",
     "dotenv-webpack": "1.7.0",
     "favicons-webpack-plugin": "0.0.9",
     "file-loader": "3.0.1",
