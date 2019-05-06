@@ -7,7 +7,7 @@ from boltathon.util import frontend_url
 from boltathon.util.auth import requires_auth
 from boltathon.util.node import get_pubkey_from_credentials, make_invoice, lookup_invoice
 from boltathon.util.errors import RequestError
-from boltathon.util.mail import send_email
+from boltathon.util.mail import send_email_once
 from boltathon.models.user import User, self_user_schema, public_user_schema, public_users_schema
 from boltathon.models.connection import Connection, public_connections_schema
 from boltathon.models.tip import Tip, tip_schema, tips_schema
@@ -125,12 +125,12 @@ def post_invoice(args, user_id, **kwargs):
     current_app.logger.error(e)
 
   if err:
-    send_email(user, 'tip_error', {
+    send_email_once(user, 'tip_error', {
       'error': err,
       'config_url': frontend_url('/user/me?tab=config'),
       'support_url': 'https://github.com/tiphub-io/tiphub/issues',
-    })
-    raise RequestError(code=500, message='Failed to generate a tip invoice')
+    }, err)
+    raise RequestError(code=500, message='Failed to generate a tip invoice, their node may be offline or otherwise inaccessible')
 
 
 @blueprint.route('/users/search/<query>', methods=['GET'])

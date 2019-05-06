@@ -35,7 +35,7 @@ get_info_lookup = {
 }
 
 
-def generate_email(type, email_args, user=None):
+def generate_email(user, type, email_args):
     info = get_info_lookup[type](email_args)
     body_text = render_template(
         'emails/%s.txt' % (type),
@@ -88,7 +88,7 @@ def send_email(user, type, email_args):
         return
 
     try:
-        email = generate_email(type, email_args)
+        email = generate_email(user, type, email_args)
         sg = SendGridAPIClient(SENDGRID_API_KEY)
         print(SENDGRID_DEFAULT_FROM)
         print(user.email)
@@ -107,3 +107,20 @@ def send_email(user, type, email_args):
     except Exception as e:
         current_app.logger.info('An unknown error occured while sending an email to %s - %s: %s' % (user.email, e.__class__.__name__, e))
         current_app.logger.error(e)
+
+# Sends an email once and only once this session of the app. This is pretty
+# low-stakes, so it's OK that it rests on restart. Mostly meant to avoid spam.
+send_once_map = {}
+
+def send_email_once(user, type, email_args, extra_key='default'):
+    if not user or not user.email:
+        return
+
+    key = '%s - %s - %s' % (user.id, type, extra_key)
+
+    if send_once_map.get(key):
+        current_app.logger.debug('Already sent with key `%s`' % (key))
+        return
+
+    send_once_map[key] = True
+    return send_email(user, type, email_args)
