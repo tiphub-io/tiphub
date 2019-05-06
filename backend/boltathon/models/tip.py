@@ -1,6 +1,7 @@
 from datetime import datetime
 from boltathon.extensions import ma, db
-from boltathon.util import gen_random_id
+from boltathon.util import gen_random_id, frontend_url
+from boltathon.util.mail import send_email
 
 class Tip(db.Model):
   __tablename__ = 'tip'
@@ -31,6 +32,16 @@ class Tip(db.Model):
     self.payment_request = payment_request
     self.rhash = rhash
     self.date_created = datetime.now()
+  
+  def confirm(self, amount):
+    self.amount = amount
+    db.session.add(self)
+    db.session.flush()
+    send_email(self.recipient, 'tip_received', {
+      'tip': self,
+      'tips_url': frontend_url('/user/me')
+    })
+
 
 class TipSchema(ma.Schema):
   class Meta:

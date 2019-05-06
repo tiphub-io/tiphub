@@ -1,0 +1,7 @@
+{{ args.body }}
+
+===============
+
+Sent from TipHub.io
+
+Don't want any more emails? Just remove your email from settings: {{ args.unsubscribe_url }}

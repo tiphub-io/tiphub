@@ -1,0 +1,8 @@
+You just received a tip from {{ args.tip.sender or 'an anonymous user' }} for {{ args.tip.amount }} satoshis.
+{% if args.tip.message %}
+They also added the following message:
+
+> {{ args.tip.message }}
+{% endif %}
+
+You can view all of your tips at {{ args.tips_url }}
