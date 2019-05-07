@@ -96,6 +96,10 @@ class API {
     });
   }
 
+  removeConnection(site: ConnectionSite) {
+    return this.request<{}>('DELETE', `/auth/${site}`);
+  }
+
   // Internal fetch function
   protected request<R extends object>(
     method: 'GET' | 'POST' | 'PUT' | 'DELETE',
