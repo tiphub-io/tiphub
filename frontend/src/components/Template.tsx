@@ -34,10 +34,13 @@ export default class Template extends React.Component<Props> {
         </div>
         <footer className="Template-footer">
           <div className="Template-footer-inner">
-            Boltathon project built by{' '}
-            <a href="https://github.com/dongcarl">@dongcarl</a>
-            {' '}and{' '}
-            <a href="https://github.com/wbobeirne">@wbobeirne</a>.
+            <p>
+              TipHub is fully open source on{' '}
+              <a href="https://github.com/tiphub-io/tiphub" target="_blank">GitHub</a>
+            </p>
+            <p>
+              Made with ❤️and ⚡️
+            </p>
           </div>
         </footer>
       </div>
