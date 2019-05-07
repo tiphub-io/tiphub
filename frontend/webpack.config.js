@@ -38,7 +38,7 @@ const lessLoader = {
   ],
 };
 const fileLoader = {
-  test: /\.(png|woff|woff2|eot|ttf|svg)$/,
+  test: /\.(png|jpg|woff|woff2|eot|ttf|svg)$/,
   use: [{
     loader: 'file-loader',
     options: {
