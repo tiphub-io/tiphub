@@ -7,7 +7,7 @@ from base64 import b64decode
 
 def make_invoice(node_url: str, macaroon: str, cert: str):
   stub = get_stub(node_url, macaroon, cert)
-  return stub.AddInvoice(ln.Invoice())
+  return stub.AddInvoice(ln.Invoice(), timeout=10)
 
 def get_pubkey_from_credentials(node_url: str, macaroon: str, cert: str):
   try:
@@ -22,7 +22,7 @@ def get_pubkey_from_credentials(node_url: str, macaroon: str, cert: str):
 def lookup_invoice(rhash: str, node_url: str, macaroon: str, cert: str):
   stub = get_stub(node_url, macaroon, cert)
   request = ln.PaymentHash(r_hash_str=rhash)
-  return stub.LookupInvoice(request)
+  return stub.LookupInvoice(request, timeout=10)
 
 def get_stub(node_url: str, macaroon: str, cert: str):
   def metadata_callback(context, callback):

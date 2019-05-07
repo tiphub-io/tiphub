@@ -53,12 +53,12 @@ def create_app(config_objects=['boltathon.settings']):
 
   @app.errorhandler(RequestError)
   def handle_request_error(err):
-    return jsonify({"message": err.message}), err.code
+    return jsonify({"error": err.message}), err.code
 
   @app.errorhandler(Exception)
   def handle_exception(err):
       app.logger.debug(traceback.format_exc())
       app.logger.debug("Uncaught exception at {} {}, see above for traceback".format(request.method, request.path))
-      return jsonify({"message": "Something went wrong"}), 500
+      return jsonify({"error": "Something went wrong"}), 500
 
   return app

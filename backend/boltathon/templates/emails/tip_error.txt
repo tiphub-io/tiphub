@@ -1,0 +1,8 @@
+We tried to generate an invoice for someone to tip you, but were unable to
+contact your node. We got back the following error:
+
+> {{ args.error }}
+
+You can update your node's connection settings here: {{ args.config_url }}
+
+If you need help fixing the problem, don't hesitate to post in our GitHub issue queue: {{ args.support_url }}
