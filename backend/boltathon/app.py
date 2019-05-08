@@ -2,7 +2,7 @@
 import traceback
 from flask import Flask, session, redirect, url_for, request, jsonify
 from flask_cors import CORS
-from boltathon.extensions import oauth, db, migrate, ma
+from boltathon.extensions import oauth, db, migrate, ma, talisman
 from boltathon.util.errors import RequestError
 from boltathon import views
 # use loginpass to make OAuth connection simpler
@@ -21,6 +21,15 @@ def create_app(config_objects=['boltathon.settings']):
   db.init_app(app)
   migrate.init_app(app, db)
   ma.init_app(app)
+  talisman.init_app(
+    app,
+    content_security_policy={
+      'default-src': "'self'",
+      'img-src': ['*', 'data:'],
+      'font-src': ['*', 'data:'],
+    },
+    force_https=app.config['ENV'] != 'development',
+  )
   CORS(app, supports_credentials=True)
 
   # Blueprints

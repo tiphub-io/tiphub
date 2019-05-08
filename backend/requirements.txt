@@ -19,3 +19,4 @@ bitstring==3.1.5
 webargs==5.2.0
 flask-cors==3.0.7
 sendgrid==6.0.4
+flask-talisman==0.6.0
