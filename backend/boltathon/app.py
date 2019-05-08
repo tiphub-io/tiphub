@@ -31,7 +31,10 @@ def create_app(config_objects=['boltathon.settings']):
     force_https=app.config['ENV'] != 'development',
   )
   compress.init_app(app)
-  CORS(app, supports_credentials=True)
+
+  # CORS
+  origins = app.config['CORS_DOMAINS'].split(',')
+  CORS(app, supports_credentials=True, origins=origins)
 
   # Blueprints
   app.register_blueprint(views.api.blueprint)
