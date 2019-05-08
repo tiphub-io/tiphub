@@ -6,6 +6,8 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const DotenvPlugin = require('dotenv-webpack');
 const WebpackPwaManifest = require('webpack-pwa-manifest');
 const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
+const TerserJSPlugin = require('terser-webpack-plugin');
+const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 
 const src = path.join(__dirname, 'src');
 const dist = path.join(__dirname, 'dist');
@@ -27,14 +29,24 @@ const cssLoader = {
   use: [
     isDev && 'style-loader',
     !isDev && MiniCssExtractPlugin.loader,
-    'css-loader',
+    {
+      loader: 'css-loader',
+      options: {
+        sourceMap: true,
+      },
+    },
   ].filter(Boolean),
 };
 const lessLoader = {
   test: /\.less$/,
   use: [
     ...cssLoader.use,
-    'less-loader',
+    {
+      loader: 'less-loader',
+      options: {
+        sourceMap: true,
+      },
+    },
   ],
 };
 const fileLoader = {
@@ -52,12 +64,12 @@ module.exports = {
   mode: isDev ? 'development' : 'production',
   name: 'main',
   target: 'web',
-  devtool: 'cheap-module-inline-source-map',
+  devtool: isDev ? 'cheap-module-inline-source-map' : 'source-map',
   entry: path.join(src, 'index.tsx'),
   output: {
     path: dist,
-    filename: 'script.js',
     publicPath,
+    filename: isDev ? 'script.js' : 'script.[hash:8].js',
     chunkFilename: isDev ? '[name].chunk.js' : '[name].[chunkhash:8].chunk.js',
   },
   module: {
@@ -96,8 +108,26 @@ module.exports = {
       inject: true,
     }),
     new DotenvPlugin({ systemvars: true }),
+    new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
     isDev && new webpack.HotModuleReplacementPlugin(),
   ].filter(p => !!p),
+  optimization: {
+    minimizer: isDev ? [] : [
+      new TerserJSPlugin({
+        cache: true,
+        parallel: true,
+        sourceMap: true,
+      }),
+      new OptimizeCSSAssetsPlugin({
+        cssProcessorOptions: {
+          map: {
+            inline: false,
+            annotation: true,
+          },
+        },
+      }),
+    ],
+  },
   devServer: {
     hot: true,
     historyApiFallback: true,
