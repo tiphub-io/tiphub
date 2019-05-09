@@ -93,7 +93,12 @@ class API {
     return this.request<SelfUser>('POST', '/auth/blockstack', {
       id: data.identityAddress,
       username: data.username,
+      token: data.authResponseToken,
     });
+  }
+
+  removeConnection(site: ConnectionSite) {
+    return this.request<{}>('DELETE', `/auth/${site}`);
   }
 
   // Internal fetch function

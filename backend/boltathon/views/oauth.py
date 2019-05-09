@@ -6,6 +6,7 @@ from boltathon.models.connection import Connection
 from boltathon.extensions import oauth, db
 from boltathon.util import frontend_url
 from boltathon.util.errors import RequestError
+from boltathon.util.auth import get_authed_user
 
 blueprint = Blueprint("oauth", __name__, url_prefix="/oauth")
 
@@ -13,13 +14,15 @@ def handle_authorize(remote, token, user_info):
     if not token or not user_info:
         raise RequestError(code=400, message="Missing OAuth token or user info")
 
-    # Find or create a new user
+    # Find existing user, add to logged in user, or create a new user
     user = Connection.get_user_by_connection(
         site=remote.name,
         site_id=user_info['preferred_username']
     )
     if not user:
-        user = User()
+        user = get_authed_user()
+        if not user:
+            user = User()
         connection = Connection(
             userid=user.id,
             site=remote.name,
