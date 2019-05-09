@@ -32,9 +32,9 @@ def create_app(config_objects=['boltathon.settings']):
   )
   compress.init_app(app)
 
-  # CORS
-  origins = app.config['CORS_DOMAINS'].split(',')
-  CORS(app, supports_credentials=True, origins=origins)
+  # Enable CORS only in development
+  if app.config['ENV'] == 'development':
+    CORS(app, supports_credentials=True)
 
   # Blueprints
   app.register_blueprint(views.api.blueprint)

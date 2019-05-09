@@ -7,7 +7,6 @@ ENV = os.getenv('FLASK_ENV', default='production')
 DEBUG = ENV == 'development'
 SECRET_KEY = os.getenv('SECRET_KEY')
 FRONTEND_URL = '' if ENV == 'production' else os.getenv('FRONTEND_URL')
-CORS_DOMAINS = os.getenv('CORS_DOMAINS', default='*')
 
 SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL")
 SQLALCHEMY_ECHO = False  # True will print queries to log
