@@ -93,6 +93,7 @@ class API {
     return this.request<SelfUser>('POST', '/auth/blockstack', {
       id: data.identityAddress,
       username: data.username,
+      token: data.authResponseToken,
     });
   }
 

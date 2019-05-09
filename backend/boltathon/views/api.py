@@ -8,6 +8,7 @@ from boltathon.util.auth import requires_auth
 from boltathon.util.node import get_pubkey_from_credentials, make_invoice, lookup_invoice
 from boltathon.util.errors import RequestError
 from boltathon.util.mail import send_email_once
+from boltathon.util.blockstack import validate_blockstack_auth
 from boltathon.models.user import User, self_user_schema, public_user_schema, public_users_schema
 from boltathon.models.connection import Connection, public_connections_schema
 from boltathon.models.tip import Tip, tip_schema, tips_schema
@@ -164,10 +165,14 @@ def get_tip(tip_id):
 @use_args({
   'id': fields.Str(required=True),
   'username': fields.Str(required=True),
+  'token': fields.Str(required=True),
 })
 def blockstack_auth(args):
-  # TODO: Server-side verification
-   # Find or create a new user and add the connection
+  # Assert that they generated a valid token
+  if not validate_blockstack_auth(args.get('id'), args.get('username'), args.get('token')):
+    raise RequestError(code=400, message='Invalid Blockstack token provided')
+
+  # Find or create a new user and add the connection
   user = Connection.get_user_by_connection(
       site='blockstack',
       site_id=args.get('id'),

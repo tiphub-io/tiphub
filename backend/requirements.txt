@@ -19,3 +19,6 @@ bitstring==3.1.5
 webargs==5.2.0
 flask-cors==3.0.7
 sendgrid==6.0.4
+
+# JWT package that supports ES256K for blockstack
+git+git://github.com/pohutukawa/python-jose@28cd302d#egg=python-jose
