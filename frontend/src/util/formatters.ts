@@ -1,5 +1,16 @@
+import { Connection, ConnectionSite } from '../api';
+
 export function makeBackendUrl(path: string) {
   return `${process.env.BACKEND_URL || ''}${path}`;
+}
+
+export function makeConnectionUrl(c: Connection): string {
+  const urls = {
+    [ConnectionSite.github]: `https://github.com/${c.site_username}`,
+    [ConnectionSite.gitlab]: `https://gitlab.com/${c.site_username}`,
+    [ConnectionSite.blockstack]: `https://gaia.blockstack.org/hub/${c.site_id}/profile.json`,
+  };
+  return urls[c.site];
 }
 
 export function blobToString(blob: Blob, format: 'hex' | 'base64'): Promise<string> {

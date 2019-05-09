@@ -21,3 +21,6 @@ flask-cors==3.0.7
 sendgrid==6.0.4
 flask-talisman==0.6.0
 Flask-Compress==1.4.0
+
+# JWT package that supports ES256K for blockstack
+git+git://github.com/pohutukawa/python-jose@28cd302d#egg=python-jose

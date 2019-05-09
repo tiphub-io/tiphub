@@ -30,6 +30,7 @@ export default class ProfileHeader extends React.Component<Props> {
                 size="tiny"
                 href={CONNECTION_UI[c.site].url(c)}
                 target="_blank"
+                key={c.site}
                 basic
               >
                 <Icon name={CONNECTION_UI[c.site].icon} /> {c.site_username}

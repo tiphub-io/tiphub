@@ -4,10 +4,11 @@ from webargs.flaskparser import use_args
 from grpc import RpcError
 from boltathon.extensions import db
 from boltathon.util import frontend_url
-from boltathon.util.auth import requires_auth
+from boltathon.util.auth import requires_auth, get_authed_user
 from boltathon.util.node import get_pubkey_from_credentials, make_invoice, lookup_invoice
 from boltathon.util.errors import RequestError
 from boltathon.util.mail import send_email_once
+from boltathon.util.blockstack import validate_blockstack_auth
 from boltathon.models.user import User, self_user_schema, public_user_schema, public_users_schema
 from boltathon.models.connection import Connection, public_connections_schema
 from boltathon.models.tip import Tip, tip_schema, tips_schema
@@ -164,18 +165,21 @@ def get_tip(tip_id):
 @use_args({
   'id': fields.Str(required=True),
   'username': fields.Str(required=True),
+  'token': fields.Str(required=True),
 })
 def blockstack_auth(args):
-  # TODO: Server-side verification
-   # Find or create a new user and add the connection
+  # Assert that they generated a valid token
+  if not validate_blockstack_auth(args.get('id'), args.get('username'), args.get('token')):
+    raise RequestError(code=400, message='Invalid Blockstack token provided')
+
+  # Find or create a new user and add the connection
   user = Connection.get_user_by_connection(
       site='blockstack',
       site_id=args.get('id'),
   )
   if not user:
-    if session['user_id']:
-      user = User.query.get(session['user_id'])
-    else:
+    user = get_authed_user()
+    if not user:
       user = User()
     connection = Connection(
         userid=user.id,
@@ -192,3 +196,21 @@ def blockstack_auth(args):
   session['user_id'] = user.id
 
   return jsonify(self_user_schema.dump(user))
+
+
+@blueprint.route('/auth/<site>', methods=['DELETE'])
+@requires_auth
+def delete_auth(site):
+  conn = [c for c in g.current_user.connections if c.site == site]
+
+  if not conn:
+    raise RequestError(code=400, message="You do not have a connection with {}".format(site))
+
+  # Delete whole account if last connection, or just connection otherwise
+  if len(g.current_user.connections) == 1:
+    db.session.delete(g.current_user)
+  else:
+    db.session.delete(conn[0])
+
+  db.session.commit()
+  return jsonify({ "success": True })

@@ -128,7 +128,6 @@ export default class ProfileTips extends React.Component<Props, State> {
       'justen',
       'laura',
       'matt',
-      'matthew',
       'nan',
       'nom',
       'steve',
