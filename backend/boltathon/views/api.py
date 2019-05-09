@@ -1,3 +1,4 @@
+import threading
 from flask import Blueprint, g, jsonify, session, current_app
 from webargs import fields, validate
 from webargs.flaskparser import use_args
@@ -5,7 +6,12 @@ from grpc import RpcError
 from boltathon.extensions import db
 from boltathon.util import frontend_url
 from boltathon.util.auth import requires_auth, get_authed_user
-from boltathon.util.node import get_pubkey_from_credentials, make_invoice, lookup_invoice
+from boltathon.util.node import (
+  get_pubkey_from_credentials,
+  make_invoice,
+  lookup_invoice,
+  watch_and_update_tip_invoice,
+)
 from boltathon.util.errors import RequestError
 from boltathon.util.mail import send_email_once
 from boltathon.util.blockstack import validate_blockstack_auth
@@ -105,6 +111,7 @@ def post_invoice(args, user_id, **kwargs):
   err = None
 
   try:
+    # Create invoice & tip
     invoice = make_invoice(user.node_url, user.macaroon, user.cert)
     tip = Tip(
       receiver_id=args.get('user_id'),
@@ -115,6 +122,14 @@ def post_invoice(args, user_id, **kwargs):
     )
     db.session.add(tip)
     db.session.commit()
+
+    # Start thread to watch tip
+    t = threading.Thread(
+      target=watch_and_update_tip_invoice,
+      args=(current_app._get_current_object(), tip, invoice)
+    )
+    t.start()
+
     return jsonify(tip_schema.dump(tip))
   except RequestError as e:
     err = 'Request error: {}'.format(e.message)
@@ -145,19 +160,6 @@ def get_tip(tip_id):
   tip = Tip.query.get(tip_id)
   if not tip:
     raise RequestError(code=404, message='No tip with that ID')
-
-  # Check with node if it's been paid
-  if not tip.amount:
-    invoice = lookup_invoice(
-      tip.rhash,
-      tip.recipient.node_url,
-      tip.recipient.macaroon,
-      tip.recipient.cert,
-    )
-    if hasattr(invoice, 'amt_paid_sat') and invoice.amt_paid_sat:
-      tip.confirm(invoice.amt_paid_sat)
-      db.session.commit()
-
   return jsonify(tip_schema.dump(tip))
 
 
