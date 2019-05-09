@@ -4,7 +4,7 @@ from webargs.flaskparser import use_args
 from grpc import RpcError
 from boltathon.extensions import db
 from boltathon.util import frontend_url
-from boltathon.util.auth import requires_auth
+from boltathon.util.auth import requires_auth, get_authed_user
 from boltathon.util.node import get_pubkey_from_credentials, make_invoice, lookup_invoice
 from boltathon.util.errors import RequestError
 from boltathon.util.mail import send_email_once
@@ -178,9 +178,8 @@ def blockstack_auth(args):
       site_id=args.get('id'),
   )
   if not user:
-    if session['user_id']:
-      user = User.query.get(session['user_id'])
-    else:
+    user = get_authed_user()
+    if not user:
       user = User()
     connection = Connection(
         userid=user.id,
@@ -197,3 +196,21 @@ def blockstack_auth(args):
   session['user_id'] = user.id
 
   return jsonify(self_user_schema.dump(user))
+
+
+@blueprint.route('/auth/<site>', methods=['DELETE'])
+@requires_auth
+def delete_auth(site):
+  conn = [c for c in g.current_user.connections if c.site == site]
+
+  if not conn:
+    raise RequestError(code=400, message="You do not have a connection with {}".format(site))
+
+  # Delete whole account if last connection, or just connection otherwise
+  if len(g.current_user.connections) == 1:
+    db.session.delete(g.current_user)
+  else:
+    db.session.delete(conn[0])
+
+  db.session.commit()
+  return jsonify({ "success": True })
