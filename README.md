@@ -1,6 +1,14 @@
 # TipHub
 
-Send sats to your favorite open source contributors!
+Send sats to your favorite open source contributors! Embed a button in your README and get tips for your work. See an example of that right here:
+
+<p>
+<a target="_blank" rel="noopener noreferrer" href="https://tiphub.io/user/964883859/tip?site=github">
+<img src="https://tiphub.io/static/images/tip-button-light.png" alt="Tip wbobeirne on TipHub" height="60">
+<br />
+My pubkey starts with <code>02458b08</code>
+</a>
+</p>
 
 ## Development
 
