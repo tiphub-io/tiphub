@@ -25,7 +25,8 @@ def watch_and_update_tip_invoice(app, tip, invoice):
     # If it's our invoice that's been paid, mark it as such and break out
     if inv.r_hash.hex() == invoice.r_hash.hex() and hasattr(inv, 'amt_paid_sat') and inv.amt_paid_sat:
       with app.app_context():
-        tip.confirm(inv.amt_paid_sat)
+        local_tip = db.session.merge(tip)
+        local_tip.confirm(inv.amt_paid_sat)
         db.session.commit()
       break
 
