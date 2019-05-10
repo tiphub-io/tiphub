@@ -25,7 +25,7 @@ def create_app(config_objects=['boltathon.settings']):
     app,
     content_security_policy={
       'default-src': "'self'",
-      'connect-src': ["'self'", 'blockstack.org'],
+      'connect-src': ["'self'", 'blockstack.org', '*.blockstack.org'],
       'img-src': ['*', 'data:'],
       'font-src': ['*', 'data:'],
     },
