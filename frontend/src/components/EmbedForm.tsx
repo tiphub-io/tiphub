@@ -1,16 +1,18 @@
 import React from 'react';
 import { Form, Dropdown, Icon } from 'semantic-ui-react';
 import CopyToClipboard from 'react-copy-to-clipboard';
-import SyntaxHighlighter from 'react-syntax-highlighter';
+import SyntaxHighlighter from 'react-syntax-highlighter/dist/esm/light';
+import xmlSyntax from 'react-syntax-highlighter/dist/esm/languages/hljs/xml';
 import syntaxStyle from 'react-syntax-highlighter/dist/styles/hljs/xcode';
 import { User, Connection } from '../api';
-import env from '../util/env';
 import { CONNECTION_UI } from '../util/constants';
 import DarkButton from '../images/tip-button-dark.png';
 import LightButton from '../images/tip-button-light.png';
 import OrangeButton from '../images/tip-button-orange.png';
 import BlueButton from '../images/tip-button-blue.png';
 import './EmbedForm.less';
+
+SyntaxHighlighter.registerLanguage('html', xmlSyntax);
 
 const COLORS = [{
   name: 'Light',
