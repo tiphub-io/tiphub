@@ -29,7 +29,7 @@ class Connection(db.Model):
   @staticmethod
   def search_tippable_users(query: str):
     from boltathon.models.user import User
-    Connection.query \
+    return Connection.query \
       .join(Connection.user) \
       .filter(User.pubkey != None) \
       .filter(Connection.site_username.ilike('%{}%'.format(query))) \
