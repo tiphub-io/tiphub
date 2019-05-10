@@ -1,4 +1,5 @@
 from flask import Blueprint, session, request, current_app, url_for, g, jsonify, send_file
+from flask_cors import cross_origin
 from boltathon.models.user import User
 from boltathon.models.tip import Tip, tip_schema
 from boltathon.extensions import db
@@ -78,6 +79,7 @@ def top_donors_total(receiver_id, limit=5):
         .all()
 
 @blueprint.route('/users/<receiver_id>/top_donors.svg')
+@cross_origin()
 def top_donors_svg(receiver_id):
     top_tips = top_donors_total(receiver_id, 3)
     print(top_tips)
@@ -218,6 +220,7 @@ def top_donors_svg(receiver_id):
     return send_file(io.BytesIO(bytes(svg, 'utf-8')), mimetype='image/svg+xml')
 
 @blueprint.route('/manifest.json')
+@cross_origin()
 def manifest():
     return current_app.send_static_file('manifest.json')
 
