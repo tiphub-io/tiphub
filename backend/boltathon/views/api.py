@@ -33,7 +33,7 @@ def get_self_user():
 @use_args({
   'user_id': fields.Integer(location='view_args', required=True),
   'page': fields.Integer(required=False, missing=0, validate=validate.Range(0)),
-  'limit': fields.Integer(required=False, missing=30, validate=validate.Range(1, 30)),
+  'limit': fields.Integer(required=False, missing=10, validate=validate.Range(1, 10)),
 })
 def get_user_tips(args, **kwargs):
   user = User.query.get(args['user_id'])
@@ -44,6 +44,7 @@ def get_user_tips(args, **kwargs):
     .filter_by(receiver_id=user.id) \
     .filter(Tip.amount != None ) \
     .filter(Tip.amount != 0) \
+    .order_by(Tip.date_created.desc()) \
     .paginate(
       page=args['page'],
       per_page=args['limit'],

@@ -31,7 +31,7 @@ export default class ProfileTips extends React.Component<Props, State> {
     const { tips, page, pageData, isLoading } = this.state;
   
     let content;
-    if (isLoading) {
+    if (isLoading && !tips.length) {
       const placeholder = (
         <Placeholder>
           <Placeholder.Header image>
@@ -83,7 +83,12 @@ export default class ProfileTips extends React.Component<Props, State> {
 
     return (
       <div className="ProfileTips">
-        <Feed className="ProfileTips-tips" size="large">{content}</Feed>
+        <Feed
+          className={`ProfileTips-tips ${isLoading ? 'is-loading' : ''}`}
+          size="large"
+        >
+          {content}
+        </Feed>
         {pageData && pageData.pages > 0 && (
           <Pagination
             activePage={page}
@@ -102,7 +107,7 @@ export default class ProfileTips extends React.Component<Props, State> {
   private fetchTips = async (page: number) => {
     this.setState({ page, isLoading: true });
     try {
-      const res = await api.getUserTips(this.props.user.id, page - 1);
+      const res = await api.getUserTips(this.props.user.id, page);
       this.setState({
         tips: res.tips,
         pageData: res.pagination,
