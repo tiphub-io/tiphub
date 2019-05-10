@@ -152,8 +152,8 @@ def post_invoice(args, user_id, **kwargs):
 
 @blueprint.route('/users/search/<query>', methods=['GET'])
 def search_users(query):
-  connections = Connection.search_usernames(query)
-  return jsonify(public_connections_schema.dump(connections))
+  connections = Connection.search_tippable_users(query)
+  return jsonify(public_connections_schema.dump(connections[:5]))
 
 
 @blueprint.route('/tips/<tip_id>', methods=['GET'])

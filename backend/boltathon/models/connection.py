@@ -26,6 +26,15 @@ class Connection(db.Model):
   def search_usernames(query: str):
     return Connection.query.filter(Connection.site_username.ilike('%{}%'.format(query))).all()
 
+  @staticmethod
+  def search_tippable_users(query: str):
+    from boltathon.models.user import User
+    Connection.query \
+      .join(Connection.user) \
+      .filter(User.pubkey != None) \
+      .filter(Connection.site_username.ilike('%{}%'.format(query))) \
+      .all()
+
 
 # Limited data (public view)
 class PublicConnectionSchema(ma.Schema):
