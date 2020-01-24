@@ -58,7 +58,7 @@ const helpText = {
         </p>
         <p>
           Make sure you do not upload your <code>readonly.macaroon</code> or
-          {' '}<code>invoice.macaroon</code> files accidentally.
+          {' '}<code>admin.macaroon</code> files accidentally.
         </p>
         <p>
           The macaroons are usually located:
