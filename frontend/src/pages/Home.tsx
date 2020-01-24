@@ -18,7 +18,7 @@ const Home: React.SFC<{}> = () => (
         Show open source some love
       </h1>
       <p className="Home-info-text">
-        Set up or conribute to lightning tips for open source projects.
+        Set up or contribute to lightning tips for open source projects.
         Non-custodial, direct to the creators.
       </p>
       <Link to="/about">
