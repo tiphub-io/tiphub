@@ -17,7 +17,7 @@ base58==0.2.5
 secp256k1==0.13.2
 bitstring==3.1.5
 webargs==5.2.0
-flask-cors==3.0.7
+flask-cors==3.0.9
 sendgrid==6.0.4
 flask-talisman==0.6.0
 Flask-Compress==1.4.0
