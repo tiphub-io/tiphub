@@ -20,7 +20,7 @@
     "less": "3.9.0",
     "less-loader": "4.1.0",
     "mini-css-extract-plugin": "0.5.0",
-    "moment": "2.24.0",
+    "moment": "2.29.4",
     "qrcode.react": "0.9.3",
     "query-string": "6.4.2",
     "react": "16.8.6",
